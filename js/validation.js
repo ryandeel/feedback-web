@@ -34,7 +34,7 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
     if(strLastName.length < 1){
         blnLastNameError = true
         blnGeneralErrors = true
-        strLastNameError = "* Must enter a first name"
+        strLastNameError = "* Must enter a last name"
     }
 
     if(!regPasswordR.test(strPassword)){
@@ -124,16 +124,13 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
     if(!regEmailR.test(strEmail)){
         blnEmailError = true
         blnGeneralErrors = true
-        strEmailError = "* Email address must be valid"
+        strEmailError = "* Invalid Username"
     }
 
-    if(!regPasswordR.test(strPassword)){
+    if(strPassword.length < 8){
         blnPasswordError = true
         blnGeneralErrors = true
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must be at least 8 characters</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must include at least one digit</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must have at least one uppercase and one lowercase letter</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-3'>* Password must have at least one alphabetic character</p>"
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Invalid Password</p>"
     }
 
     if(blnEmailError == true){

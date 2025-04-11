@@ -159,5 +159,7 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             showConfirmButton: false,
             timer: 1500
         });
+        document.querySelector('#frmLogin').style.display = 'none'
+        document.querySelector('#divDashboard').style.display = 'block'
     }
 })

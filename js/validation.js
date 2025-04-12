@@ -159,7 +159,22 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             showConfirmButton: false,
             timer: 1500
         });
-        document.querySelector('#frmLogin').style.display = 'none'
-        document.querySelector('#divDashboard').style.display = 'block'
+        fetch('dashboard.html')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Use the fetched HTML here
+            // For example, you can set the innerHTML of an element with the fetched HTML
+             document.querySelector('#frmLogin').style.display = 'none'
+             document.querySelector('#frmDashboard').innerHTML = html;
+             document.querySelector('#frmDashboard').style.display = 'block'
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 })

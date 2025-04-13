@@ -29,3 +29,33 @@ document.querySelector('#btnLogin').addEventListener('click', (event) => {
     })
     .catch(error => console.error("Error fetching chart:", error));
 })
+
+// fetch('../dashboard.html')
+// .then(response => {
+//     if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+//     return response.text();
+// })
+// .then(html => {
+//     // Use the fetched HTML here
+//     // For example, you can set the innerHTML of an element with the fetched HTML
+//     document.querySelector('#frmDashboard').innerHTML = html;
+//     document.querySelector('#btnLogout').addEventListener("click", (e) => {
+//         document.querySelector('#frmDashboard').style.display = 'none'
+//         document.querySelector('#divLandingPage').style.display = 'block'
+//     })
+
+//     document.querySelector('#btnJoinClass').addEventListener("click", (e) => {
+//         document.querySelector('#frmDashboard').style.display = 'none'
+//         document.querySelector('#frmJoinClass').style.display = 'block'   
+//     })
+
+//     document.querySelector('#btnCreateClass').addEventListener("click", (e) => {
+//         document.querySelector('#frmDashboard').style.display = 'none'
+//         document.querySelector('#frmCreateClass').style.display = 'block'   
+//     })
+// })
+// .catch(error => {
+//     console.error('Error:', error);
+// });

@@ -42,3 +42,23 @@ document.querySelector('#btnSwapJoinClass').addEventListener("click", (e) => {
     document.querySelector('#frmCreateClass').style.display = 'none';
     document.querySelector('#frmJoinClass').style.display = 'block';
 });
+
+document.querySelector('#btnTempClassInstructor').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'none';
+    document.querySelector('#frmInstructorView').style.display = 'block';
+});
+
+document.querySelector('#btnTempClassStudent').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'none';
+    document.querySelector('#frmStudentView').style.display = 'block';
+});
+
+document.querySelector('#btnReturnDashboard').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentView').style.display = 'none';
+    document.querySelector('#frmDashboard').style.display = 'block';
+});
+
+document.querySelector('#btnReturnInstructorDashboard').addEventListener("click", (e) => {
+    document.querySelector('#frmInstructorView').style.display = 'none';
+    document.querySelector('#frmDashboard').style.display = 'block';
+})

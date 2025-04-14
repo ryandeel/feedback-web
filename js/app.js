@@ -18,19 +18,7 @@ document.querySelector('#btnSwapRegistration').addEventListener('click', (event)
     document.querySelector('#frmRegistration').style.display = 'block'
 })
 
-//add a an event listener for a dashboard button and have it fetch the dashboard html
-document.querySelector('#btnLogin').addEventListener('click', (event) => {
-    fetch('/dashboard.html')
-    .then(response => response.text())
-    .then(html => {
-        const objScript = document.createElement('script');
-        objScript.src = 'js/validation.js'; 
-        objScript.type = 'text/javascript';
-    })
-    .catch(error => console.error("Error fetching chart:", error));
-})
-
-// fetch('../dashboard.html')
+// fetch('dashboard.html')
 // .then(response => {
 //     if (!response.ok) {
 //         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -39,8 +27,11 @@ document.querySelector('#btnLogin').addEventListener('click', (event) => {
 // })
 // .then(html => {
 //     // Use the fetched HTML here
-//     // For example, you can set the innerHTML of an element with the fetched HTML
-//     document.querySelector('#frmDashboard').innerHTML = html;
+//     // For example, you can set the innerHTML of an element with the fetched HTML'
+//     const dashboardContent = document.querySelector('#frmDashboard')
+//     dashboardContent.innerHTML = html
+//     dashboardContent.style.display = 'none'
+
 //     document.querySelector('#btnLogout').addEventListener("click", (e) => {
 //         document.querySelector('#frmDashboard').style.display = 'none'
 //         document.querySelector('#divLandingPage').style.display = 'block'

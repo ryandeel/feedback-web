@@ -170,8 +170,24 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             // Use the fetched HTML here
             // For example, you can set the innerHTML of an element with the fetched HTML
              document.querySelector('#frmLogin').style.display = 'none'
+
              document.querySelector('#frmDashboard').innerHTML = html;
              document.querySelector('#frmDashboard').style.display = 'block'
+
+             document.querySelector('#btnLogout').addEventListener("click", (e) => {
+                document.querySelector('#frmDashboard').style.display = 'none'
+                document.querySelector('#divLandingPage').style.display = 'block'
+             })
+
+            document.querySelector('#btnJoinClass').addEventListener("click", (e) => {
+                document.querySelector('#frmDashboard').style.display = 'none'
+                document.querySelector('#frmJoinClass').style.display = 'block'   
+            })
+
+            document.querySelector('#btnCreateClass').addEventListener("click", (e) => {
+                document.querySelector('#frmDashboard').style.display = 'none'
+                document.querySelector('#frmCreateClass').style.display = 'block'   
+            })
         })
         .catch(error => {
             console.error('Error:', error);

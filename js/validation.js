@@ -115,7 +115,7 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
     const strEmail = document.querySelector('#txtLoginEmail').value
     const strPassword = document.querySelector('#txtLoginPassword').value
 
-    let blnGeneralErrors = false
+    var blnGeneralErrors = false
     let blnEmailError = false
     let blnPasswordError = false
     let strEmailError = ''
@@ -159,38 +159,66 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             showConfirmButton: false,
             timer: 1500
         });
-        fetch('dashboard.html')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-            // Use the fetched HTML here
-            // For example, you can set the innerHTML of an element with the fetched HTML
-             document.querySelector('#frmLogin').style.display = 'none'
+        // Hide the login page and show the dashboard form
+        document.querySelector('#frmLogin').style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
+    }
+})
 
-             document.querySelector('#frmDashboard').innerHTML = html;
-             document.querySelector('#frmDashboard').style.display = 'block'
+document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
+    const strClassCode = document.querySelector('#txtClassCode').value
+    const strClassCodeError = document.querySelector('#txtClassCodeError')
+    let blnGeneralErrors = false
+    let blnClassCodeError = false
 
-             document.querySelector('#btnLogout').addEventListener("click", (e) => {
-                document.querySelector('#frmDashboard').style.display = 'none'
-                document.querySelector('#divLandingPage').style.display = 'block'
-             })
+    if(strClassCode.length < 1){
+        blnClassCodeError = true
+        blnGeneralErrors = true
+        strClassCodeError.innerText = "* Must enter a class code"
+    }
+    else{
+        strClassCodeError.innerText = ''
+        blnClassCodeError = false
+    }
 
-            document.querySelector('#btnJoinClass').addEventListener("click", (e) => {
-                document.querySelector('#frmDashboard').style.display = 'none'
-                document.querySelector('#frmJoinClass').style.display = 'block'   
-            })
-
-            document.querySelector('#btnCreateClass').addEventListener("click", (e) => {
-                document.querySelector('#frmDashboard').style.display = 'none'
-                document.querySelector('#frmCreateClass').style.display = 'block'   
-            })
-        })
-        .catch(error => {
-            console.error('Error:', error);
+    if(!blnGeneralErrors){
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Joined Class!",
+            showConfirmButton: false,
+            timer: 1500
         });
+        document.querySelector('#frmJoinClass').style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
+    }
+})
+
+document.querySelector('#btnCreateClassSubmit').addEventListener("click", (e) => {
+    let blnGeneralErrors = false
+
+    const strClassName = document.querySelector('#txtClassName').value
+    const strClassCode = document.querySelector('#txtCreateClassCode').value
+
+    if(strClassName.length < 1){
+        blnGeneralErrors = true
+        document.querySelector('#txtClassNameError').innerText = "* Must enter a class name"
+    }
+
+    if(strClassCode.length < 1){
+        blnGeneralErrors = true
+        document.querySelector('#txtCreateCodeError').innerText = "* Must enter a class code"
+    }
+
+    if(!blnGeneralErrors){
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Class Created!",
+            showConfirmButton: false,
+            timer: 1500
+        });
+        document.querySelector('#frmCreateClass').style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
     }
 })

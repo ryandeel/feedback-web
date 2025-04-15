@@ -1,3 +1,5 @@
+// bro this file LOL
+
 document.querySelector('#btnStartRegister').addEventListener('click', (event) => {
     document.querySelector('#divLandingPage').style.display = 'none'
     document.querySelector('#frmRegistration').style.display = 'block'
@@ -43,22 +45,82 @@ document.querySelector('#btnSwapJoinClass').addEventListener("click", (e) => {
     document.querySelector('#frmJoinClass').style.display = 'block';
 });
 
+document.querySelector('#btnLeaveClass').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'none';
+    document.querySelector('#frmLeaveClass').style.display = 'block';
+})
+
 document.querySelector('#btnTempClassInstructor').addEventListener("click", (e) => {
     document.querySelector('#frmDashboard').style.display = 'none';
-    document.querySelector('#frmInstructorView').style.display = 'block';
+    document.querySelector('#frmInstructorClassView').style.display = 'block';
 });
 
 document.querySelector('#btnTempClassStudent').addEventListener("click", (e) => {
     document.querySelector('#frmDashboard').style.display = 'none';
-    document.querySelector('#frmStudentView').style.display = 'block';
+    document.querySelector('#frmStudentClassView').style.display = 'block';
 });
 
 document.querySelector('#btnReturnDashboard').addEventListener("click", (e) => {
-    document.querySelector('#frmStudentView').style.display = 'none';
+    document.querySelector('#frmStudentClassView').style.display = 'none';
     document.querySelector('#frmDashboard').style.display = 'block';
 });
 
 document.querySelector('#btnReturnInstructorDashboard').addEventListener("click", (e) => {
-    document.querySelector('#frmInstructorView').style.display = 'none';
+    document.querySelector('#frmInstructorClassView').style.display = 'none';
     document.querySelector('#frmDashboard').style.display = 'block';
+})
+
+document.querySelector('#btnBackToDashboardLeave').addEventListener("click", (e) => {
+    document.querySelector('#frmLeaveClass').style.display = 'none';
+    document.querySelector('#frmDashboard').style.display = 'block';
+})
+
+document.querySelector('#btnBackToDashboardJoin').addEventListener("click", (e) => {
+    document.querySelector('#frmJoinClass').style.display = 'none';
+    document.querySelector('#frmDashboard').style.display = 'block';
+})
+
+document.querySelector('#btnBackToDashboardCreate').addEventListener("click", (e) => {
+    document.querySelector('#frmCreateClass').style.display = 'none';
+    document.querySelector('#frmDashboard').style.display = 'block';
+})
+
+document.querySelector('#btnViewGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmViewGroup').style.display = 'block';
+})
+
+document.querySelector('#btnViewStudentReview').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmViewReview').style.display = 'block';
+})
+
+document.querySelector('#btnBackStudent').addEventListener("click", (e) => {
+    document.querySelector('#frmViewGroup').style.display = 'none';
+    document.querySelector('#frmStudentClassView').style.display = 'block';
+})
+
+document.querySelector('#btnBackStudentReview').addEventListener("click", (e) => {
+    document.querySelector('#frmViewReview').style.display = 'none';
+    document.querySelector('#frmStudentClassView').style.display = 'block';
+})
+
+document.querySelector('#btnBackInstructor').addEventListener("click", (e) => {
+    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
+    document.querySelector('#frmInstructorClassView').style.display = 'block';
+})
+
+document.querySelector('#btnViewGroupInstructor').addEventListener("click", (e) => {
+    document.querySelector('#frmInstructorClassView').style.display = 'none';
+    document.querySelector('#frmViewGroupInstructor').style.display = 'block';
+})
+
+document.querySelector('#btnBackInstructorReview').addEventListener("click", (e) => {
+    document.querySelector('#frmViewReviewInstructor').style.display = 'none';
+    document.querySelector('#frmInstructorClassView').style.display = 'block';
+})
+
+document.querySelector('#btnViewInstructorReview').addEventListener("click", (e) => {
+    document.querySelector('#frmInstructorClassView').style.display = 'none';
+    document.querySelector('#frmViewReviewInstructor').style.display = 'block';
 })

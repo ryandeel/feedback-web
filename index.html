@@ -19,7 +19,7 @@
         <main class="d-flex justify-content-center align-items-center flex-column bg-dark">
             <h2 style="color: #5651a7;"class="mt-4 mb-2 p-2">Improve your feedback efficiency:</h2>
             <article class="bg-light text-dark p-4 rounded col-12 col-md-6 col-lg-4" style="overflow-wrap: break-word;">
-                <img src="images/9186482.png" alt="Communication between others" class="mb-5" style="width:500px;height:500px;">
+                <img src="images/9186482.png" alt="Communication between others" class="img-fluid mb-5" style="width:500px;height:500px;">
                 <p>Are you having trouble with group members in school?</p>
                 <p>RateYourGroup is an online service that allows students to review group members publicly to help encourage greatness! You also have the option to leave a private review for only the teacher to see!</p>
                 <p>Sign up now to get started with your group!</p>
@@ -79,21 +79,20 @@
         <form id="frmDashboard" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <button id="btnLeaveClass" class="btn btn-primary col-12 mb-2" type="button" style="background-color: #5651a7; width: 150px; border-color: #5651a7">Leave a Class</button>
+                    <button id="btnLeaveClass" class="btn btn-primary col-12 mb-2" type="button" style="background-color: #5651a7; width: 150px; border-color: #5651a7;">Leave a Class</button>
                     <h1 class="text-center" style="color: #5651a7;">Dashboard</h1>
                     <div class="card">
                         <div class="card-body">
-                            <div id="divClasses" class="d-flex gap-2">
-                                <!-- Classes will be dynamically added here -->
-                                 <button id="btnTempClassStudent" class="btn  col-12" type="button" style="width:200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold; display:inline-block">tempClassStudent</button>
-                                 <button id="btnTempClassInstructor" class="btn  col-12" type="button" style="width:200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold; display:inline-block">tempClassInstructor</button>
-                                 <!-- <h3 class="text-center" style="color: #5651a7;">No classes added yet!</h3> -->
-                            </div>
+                            <div id="divClasses" class="d-flex flex-wrap gap-2 justify-content-center">
+                                <!-- classes will be added here -->
+                                <button id="btnTempClassStudent" class="btn col-md-6 col-lg-auto" type="button" style="min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;">tempClassStudent</button>
+                                <button id="btnTempClassInstructor" class="btn col-md-6 col-lg-auto" type="button" style="min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;">tempClassInstructor</button>
+                                </div>
                         </div>
                     </div>
-                    <div class="d-flex gap-2 w-50">
-                        <button id="btnJoinClass" class="btn btn-primary col-12 mt-4" type="button" style="background-color: #5651a7; border-color: #5651a7; display:inline-block;">Join Class</button>
-                        <button id="btnCreateClass" class="btn btn-primary col-12 mt-4" type="button" style="background-color: #5651a7; border-color: #5651a7; display:inline-block;">Create Class</button>
+                    <div class="d-flex flex-column flex-md-row gap-2 mt-4">
+                        <button id="btnJoinClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;">Join Class</button>
+                        <button id="btnCreateClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;">Create Class</button>
                     </div>
                     <hr class="mt-4">
                     <div class="d-flex justify-content-center">
@@ -235,11 +234,23 @@
             <div class="card col-12">
                 <div class="card-body">
                     <button id="btnBackInstructor" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
-                    <h2 class="text-center" style="color: #5651a7;">Group Members</h2>
+                    <h2 class="text-center" style="color: #5651a7;">Groups</h2>
                     <div id="divGroupMembersInstructor" class="gap-2">
+                        <button id="btnViewDummyGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; border-color:gray; font-weight:bold;">dummyGroup</button>
                         <!-- Group members will be dynamically added here -->
-                        <p>placeholder: group member information goes here</p>
                         <!-- <h3 class="text-center" style="color: #5651a7;">No reviews added yet!</h3> -->
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form id="frmViewDummyGroup" style="display: none;">
+            <div class="card col-12">
+                <div class="card-body">
+                    <button id="btnBackDummyGroup" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <h2 class="text-center" style="color: #5651a7;">Group Members</h2>
+                    <div id="divDummyGroupMembers" class="gap-2">
+                        <p>placeholder: group member information goes here</p>
                     </div>
                 </div>
             </div>

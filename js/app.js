@@ -144,3 +144,12 @@ document.querySelector('#btnBackWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmWriteReview').style.display = 'none';
     document.querySelector('#frmStudentClassView').style.display = 'block';
 })
+
+document.querySelector('#btnViewDummyGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
+    document.querySelector('#frmViewDummyGroup').style.display = 'block';
+})
+document.querySelector('#btnBackDummyGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmViewDummyGroup').style.display = 'none';
+    document.querySelector('#frmViewGroupInstructor').style.display = 'block';
+})

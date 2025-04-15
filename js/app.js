@@ -124,3 +124,12 @@ document.querySelector('#btnViewInstructorReview').addEventListener("click", (e)
     document.querySelector('#frmInstructorClassView').style.display = 'none';
     document.querySelector('#frmViewReviewInstructor').style.display = 'block';
 })
+
+document.querySelector('#btnViewDummyGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
+    document.querySelector('#frmViewDummyGroup').style.display = 'block';
+})
+document.querySelector('#btnBackDummyGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmViewDummyGroup').style.display = 'none';
+    document.querySelector('#frmViewGroupInstructor').style.display = 'block';
+})

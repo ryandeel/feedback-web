@@ -124,3 +124,23 @@ document.querySelector('#btnViewInstructorReview').addEventListener("click", (e)
     document.querySelector('#frmInstructorClassView').style.display = 'none';
     document.querySelector('#frmViewReviewInstructor').style.display = 'block';
 })
+
+document.querySelector('#btnCreateReview').addEventListener("click", (e) => {
+    document.querySelector('#frmInstructorClassView').style.display = 'none';
+    document.querySelector('#frmCreateReview').style.display = 'block';
+})
+
+document.querySelector('#btnBackCreateReview').addEventListener("click", (e) => {
+    document.querySelector('#frmCreateReview').style.display = 'none';
+    document.querySelector('#frmInstructorClassView').style.display = 'block';
+})
+
+document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmWriteReview').style.display = 'block';
+})
+
+document.querySelector('#btnBackWriteReview').addEventListener("click", (e) => {
+    document.querySelector('#frmWriteReview').style.display = 'none';
+    document.querySelector('#frmStudentClassView').style.display = 'block';
+})

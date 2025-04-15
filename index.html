@@ -159,7 +159,7 @@
                         <!-- Reviews will be dynamically added here -->
                         <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Group Members</button>
                         <button id="btnViewStudentReview" class="btn col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Your Reviews</button>
-                        <button id="btnViewReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Write a Review</button>
+                        <button id="btnWriteReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Write a Review</button>
                         <!-- <h3 class="text-center" style="color: #5651a7;">No reviews added yet!</h3> -->
                     </div>
                     <hr class="mt-4">
@@ -198,6 +198,17 @@
             </div>
         </form>
 
+        <form id="frmWriteReview" style="display:none;">
+            <div class="card col-12">
+                <div class="card-body">
+                    <button id="btnBackWriteReview" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <h2 class="text-center" style="color: #5651a7;">Fill Out Review</h2>
+                    <p>placeholder: review information goes here</p>
+                    <hr class="mt-4">
+                    <button id="btnWriteReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
+                </div>
+            </div>
+        </form>
 
         <!-- intructor view -->
 
@@ -248,6 +259,24 @@
             </div>
         </form>
 
+        <form id="frmCreateReview" style="display: none;">
+            <div class="card col-12">
+                <div class="card-body">
+                    <button id="btnBackCreateReview" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <h2 class="text-center" style="color: #5651a7;">Create Review Prompt</h2>
+                    <input id="txtReviewTitle" class="form-control mt-3" type="text" placeholder="Review Title" aria-label="Input for review title">
+                    <p style="color: #ff0033;" class='mt-1 mb-3'id="txtReviewPromptError"></p>
+                    <select id="selQuestionType" class="form-select mt-3" aria-label="Select for question type">
+                        <option selected>Select Question Type</option>
+                        <option value="Multiple Choice">Multiple Choice</option>
+                        <option value="Likert Scale">Likert Scale</option>
+                        <option value="Short Answer">Short Answer</option>
+                    </select>
+                    <hr class="mt-4">
+                    <button id="btnCreateReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
+                </div>
+            </div>
+        </form>
     </div>
 
 

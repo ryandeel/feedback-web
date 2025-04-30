@@ -106,6 +106,34 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
             showConfirmButton: false,
             timer: 1500
         });
+        // Send POST request to the server
+        fetch('http://127.0.0.1:5500/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: strEmail,
+                password: strPassword,
+                firstName: strFirstName,
+                lastName: strLastName
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(`Error: ${err.error || response.statusText}`);
+                });
+            }
+            
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
     }
 })
 

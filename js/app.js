@@ -1,28 +1,29 @@
 // bro this file LOL
 
 document.querySelector('#btnStartRegister').addEventListener('click', (event) => {
-    document.querySelector('#divLandingPage').style.display = 'none'
-    document.querySelector('#frmRegistration').style.display = 'block'
-})
+    document.querySelector('#divLandingPage').style.display = 'none';
+    document.querySelector('#frmRegistration').style.display = 'block';
+});
 
 document.querySelector('#btnStartLogin').addEventListener('click', (event) => {
-    document.querySelector('#divLandingPage').style.display = 'none'
-    document.querySelector('#frmLogin').style.display = 'block'
-})
+    document.querySelector('#divLandingPage').style.display = 'none';
+    document.querySelector('#frmLogin').style.display = 'block';
+});
 
 document.querySelector('#btnSwapLogin').addEventListener('click', (event) => {
-    document.querySelector('#frmRegistration').style.display = 'none'
-    document.querySelector('#frmLogin').style.display = 'block'
-})
+    document.querySelector('#frmRegistration').style.display = 'none';
+    document.querySelector('#frmLogin').style.display = 'block';
+});
 
 document.querySelector('#btnSwapRegistration').addEventListener('click', (event) => {
-    document.querySelector('#frmLogin').style.display = 'none'
-    document.querySelector('#frmRegistration').style.display = 'block'
-})
+    document.querySelector('#frmLogin').style.display = 'none';
+    document.querySelector('#frmRegistration').style.display = 'block';
+});
 
 document.querySelector('#btnLogout').addEventListener("click", (e) => {
     document.querySelector('#frmDashboard').style.display = 'none';
     document.querySelector('#divLandingPage').style.display = 'block';
+    hideNavbar();
 });
 
 document.querySelector('#btnJoinClass').addEventListener("click", (e) => {
@@ -153,3 +154,53 @@ document.querySelector('#btnBackDummyGroup').addEventListener("click", (e) => {
     document.querySelector('#frmViewDummyGroup').style.display = 'none';
     document.querySelector('#frmViewGroupInstructor').style.display = 'block';
 })
+
+// Log In button functionality
+document.querySelector('#btnLogin').addEventListener("click", (e) => {
+    const isValidLogin = true; // Replace this with the actual validation result from validation.js
+
+    if (isValidLogin) {
+        Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Log In Success!",
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        // Show the dashboard and navigation bar
+        document.querySelector('#frmLogin').style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
+        showNavbar();
+    }
+});
+
+// Log Out button functionality
+document.querySelector('#btnLogout').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'none';
+    document.querySelector('#divLandingPage').style.display = 'block';
+    hideNavbar();
+});
+
+// Navigation bar links
+document.querySelector('#navDashboard').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'block';
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmInstructorClassView').style.display = 'none';
+});
+
+document.querySelector('#navLogout').addEventListener("click", (e) => {
+    document.querySelector('#frmDashboard').style.display = 'none';
+    document.querySelector('#divLandingPage').style.display = 'block';
+    hideNavbar();
+});
+
+// Function to show the navigation bar
+function showNavbar() {
+    document.querySelector('#navbar').style.display = 'block';
+}
+
+// Function to hide the navigation bar
+function hideNavbar() {
+    document.querySelector('#navbar').style.display = 'none';
+}

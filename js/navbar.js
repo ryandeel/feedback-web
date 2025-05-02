@@ -21,4 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#divLandingPage').style.display = 'block';
         hideNavbar();
     });
+    
+    // Show the profile card when "My Profile" is clicked
+    document.querySelector('#navProfile').addEventListener('click', (e) => {
+        document.querySelector('#profileCard').style.display = 'block';
+        document.querySelector('#frmDashboard').style.display = 'none';
+    });
+    
+    // Hide the profile card when the "Close" button is clicked
+    document.querySelector('#btnCloseProfile').addEventListener('click', (e) => {
+        const profileCard = document.querySelector('#profileCard');
+        profileCard.style.display = 'none';
+        // Optional: Show dashboard again when closing profile
+        document.querySelector('#frmDashboard').style.display = 'block';
+    });
 });

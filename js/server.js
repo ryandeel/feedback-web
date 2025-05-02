@@ -866,7 +866,7 @@ app.put("/course-group/:groupId", (req, res) => {
   const strGroupID = req.params.groupId;
   const strGroupName = req.body.groupName?.trim();
 
-  if (!strGroupName || !strCourseID) {
+  if (!strGroupName) {
     return res.status(400).json({ error: "Group name required." });
   }
 
@@ -939,7 +939,7 @@ app.put("/assessment/:assessmentId", (req, res) => {
   const strDueDate = req.body.dueDate?.trim();
   const strEndDate = req.body.endDate?.trim();
 
-  if (!strCourseID || !strName || !strStatus || !strType || !strStartDate || !strDueDate || !strEndDate) {
+  if ( !strName || !strStatus || !strType || !strStartDate || !strDueDate || !strEndDate) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -968,7 +968,7 @@ app.put("/assessment-question/:questionId", (req, res) => {
   const strNarrative = req.body.questionNarrative?.trim();
   const strHelperText = req.body.helperText?.trim();
 
-  if (!strAssessmentID || !strQuestionType || !strNarrative) {
+  if (!strQuestionType || !strNarrative) {
     return res.status(400).json({ error: "Assessment ID, question type, and narrative are required." });
   }
 
@@ -994,7 +994,7 @@ app.put("/assessment-response/:responseId", (req, res) => {
   const strResponse = req.body.response?.trim();
   const strPublic = req.body.public?.toString().toLowerCase() === "true" ? "true" : "false";
 
-  if (!strAssessmentID || !strQuestionID || !strUserID || !strTargetUserID || !strResponse) {
+  if (!strResponse) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -1004,8 +1004,7 @@ app.put("/assessment-response/:responseId", (req, res) => {
     WHERE ResponseID = ?
   `;
   const arrParams = [
-    strAssessmentID, strQuestionID, strUserID,
-    strTargetUserID, strResponse, strPublic, strResponseID
+   strResponse, strPublic, strResponseID
   ];
 
   db.run(strSQL, arrParams, function (err) {

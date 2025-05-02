@@ -629,6 +629,7 @@ app.post("/logs", (req, res) => {
   
         return res.status(201).json({
           status: "success",
+          userId: strUserID,
           sessionId: strSessionID,
           token: strToken,
           expiresAt: strEndTime

@@ -1,3 +1,35 @@
+// async function loadUserClasses() {
+//     const strUserID = localStorage.getItem("userId");
+//     if (!strUserID) return;
+
+//     try {
+//         const enrollments = await getAllEnrollments();
+//         const courses = await getAllCourses();
+
+//         const userEnrollments = enrollments.filter(e => e.UserID === strUserID);
+//         const enrolledCourseIds = userEnrollments.map(e => e.CourseID);
+
+//         const userCourses = courses.filter(c => enrolledCourseIds.includes(c.CourseID));
+
+//         const divClasses = document.querySelector('#divClasses');
+//         divClasses.innerHTML = ''; // Clear previous content
+
+//         if (userCourses.length === 0) {
+//             divClasses.innerHTML = `<h5 style="color:#5651a7;">No classes enrolled</h5>`;
+//         } else {
+//             userCourses.forEach(course => {
+//                 const btn = document.createElement("button");
+//                 btn.className = "btn col-md-6 col-lg-auto fs-6";
+//                 btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
+//                 btn.innerText = `${course.CourseName} (${course.CourseNumber})`;
+//                 divClasses.appendChild(btn);
+//             });
+//         }
+
+//     } catch (err) {
+//         console.error("Failed to load classes:", err.message);
+//     }
+// }
 
 document.querySelector('#btnRegister').addEventListener("click", (e) => {
     e.preventDefault();
@@ -120,7 +152,6 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
 })
 
 document.querySelector('#btnLogin').addEventListener("click", (e) => {
-    e.preventDefault();
     const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
     const strEmail = document.querySelector('#txtLoginEmail').value
@@ -176,9 +207,9 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
     
             // You can store userId here if needed:
             localStorage.setItem("userId", data.userId);
-    
             document.querySelector('#frmLogin').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
+            //loadUserClasses();
         }).catch(err => {
             Swal.fire({
                 icon: 'error',
@@ -191,7 +222,6 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
 })
 
 document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
-    e.preventDefault();
     const strClassCode = document.querySelector('#txtClassCode').value
     const strClassCodeError = document.querySelector('#txtClassCodeError')
     let blnGeneralErrors = false
@@ -249,3 +279,30 @@ document.querySelector('#btnCreateClassSubmit').addEventListener("click", (e) =>
         document.querySelector('#frmDashboard').style.display = 'block';
     }
 })
+
+document.querySelector('#btnLeaveClassSubmit').addEventListener("click", async (e) => {
+    const select = document.querySelector('#selectLeaveClass');
+    const enrollmentId = select.value;
+
+    if (!enrollmentId || enrollmentId === "Select Class") {
+        Swal.fire({ icon: "error", title: "Please select a class to leave." });
+        return;
+    }
+
+    try {
+        await deleteEnrollment(enrollmentId);
+
+        Swal.fire({
+            icon: "success",
+            title: "You left the class.",
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        // dashboard view
+        document.querySelector('#frmLeaveClass').style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
+    } catch (err) {
+        Swal.fire({ icon: "error", title: "Failed to leave class", text: err.message });
+    }
+});

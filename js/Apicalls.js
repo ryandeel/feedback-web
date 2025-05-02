@@ -24,3 +24,41 @@ async function createSession(objCredentials) {
     return data;
 }
 
+async function getAllEnrollments() {
+    const response = await fetch(`${API_BASE}/enrollments`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not fetch enrollments");
+    return data.enrollments;
+}
+
+async function getAllCourses() {
+    const response = await fetch(`${API_BASE}/courses`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Could not fetch courses");
+    return data.courses;
+}
+
+async function getUserEnrollments(userId) {
+    const response = await fetch(`${API_BASE}/enrollments`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to fetch enrollments");
+    return data.enrollments.filter(e => e.UserID === userId);
+}
+
+async function deleteEnrollment(enrollmentId) {
+    const response = await fetch(`${API_BASE}/enrollment/${enrollmentId}`, {
+        method: 'DELETE'
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to delete enrollment");
+    return data;
+}
+
+async function getCourses() {
+    const response = await fetch(`${API_BASE}/courses`);
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to fetch courses");
+    return data.courses;
+}
+

@@ -45,7 +45,23 @@ document.querySelector('#btnSwapJoinClass').addEventListener("click", (e) => {
     document.querySelector('#frmJoinClass').style.display = 'block';
 });
 
-document.querySelector('#btnLeaveClass').addEventListener("click", (e) => {
+document.querySelector('#btnLeaveClass').addEventListener("click", async (e) => {
+    const userId = localStorage.getItem("userId");
+    const enrollments = await getUserEnrollments(userId);
+    const courses = await getCourses();
+    const select = document.querySelector('#selectLeaveClass');
+
+    // Clear and populate dropdown
+    select.innerHTML = `<option selected>Select Class</option>`;
+    enrollments.forEach(enroll => {
+        const course = courses.find(c => c.CourseID === enroll.CourseID);
+        if (course) {
+            const option = document.createElement('option');
+            option.value = enroll.EnrollmentID; // store enrollment ID
+            option.text = `${course.CourseName} (${course.CourseNumber})`;
+            select.appendChild(option);
+        }
+    });
     document.querySelector('#frmDashboard').style.display = 'none';
     document.querySelector('#frmLeaveClass').style.display = 'block';
 })

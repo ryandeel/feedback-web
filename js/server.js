@@ -50,9 +50,7 @@ return res.status(400).json({ error: "Password must contain at least one lowerca
 if (!/[0-9]/.test(strPassword)) {
 return res.status(400).json({ error: "Password must contain at least one number" });
 }
-if (!/[!@#$%^&*(),.?":{}|<>]/.test(strPassword)) {
-return res.status(400).json({ error: "Password must contain at least one special character" });
-}
+
 
 const strHashedPassword = bcrypt.hashSync(strPassword, intSalt);
 const strTimestamp = new Date().toISOString();
@@ -1016,6 +1014,8 @@ app.put("/assessment-response/:responseId", (req, res) => {
 
 //Get statments
 // USERS
+
+//get all users
 app.get("/users", (req, res) => {
   const sql = "SELECT * FROM tblUsers";
   db.all(sql, [], (err, rows) => {

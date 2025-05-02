@@ -1,4 +1,6 @@
+
 document.querySelector('#btnRegister').addEventListener("click", (e) => {
+    e.preventDefault();
     const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
     const strFirstName = document.querySelector('#txtFirstName').value
@@ -97,19 +99,28 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
         document.querySelector('#txtConfirmPasswordError').innerText = ''
         document.querySelector('#txtConfirmPassword').classList.remove("is-invalid")
     }
-
     if(!blnGeneralErrors){
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Registration Success!",
-            showConfirmButton: false,
-            timer: 1500
+        createUser({
+            firstName: strFirstName,
+            lastName: strLastName,
+            email: strEmail,
+            password: strPassword
+        }).then(data => {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Registration Success!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }).catch(err => {
+            Swal.fire({ icon: 'error', title: 'Registration failed', text: err.message });
         });
     }
 })
 
 document.querySelector('#btnLogin').addEventListener("click", (e) => {
+    e.preventDefault();
     const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
     const strEmail = document.querySelector('#txtLoginEmail').value
@@ -151,21 +162,36 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
         document.querySelector('#txtLoginPassword').classList.remove("is-invalid")
     }
 
-    if(!blnGeneralErrors){
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Log In Success!",
-            showConfirmButton: false,
-            timer: 1500
+    if (!blnGeneralErrors) {
+        createSession({
+            email: strEmail,
+            password: strPassword
+        }).then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Login successful!',
+                timer: 1000,
+                showConfirmButton: false
+            });
+    
+            // You can store userId here if needed:
+            localStorage.setItem("userId", data.userId);
+    
+            document.querySelector('#frmLogin').style.display = 'none';
+            document.querySelector('#frmDashboard').style.display = 'block';
+        }).catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Login failed',
+                text: err.message
+            });
         });
-        // Hide the login page and show the dashboard form
-        document.querySelector('#frmLogin').style.display = 'none';
-        document.querySelector('#frmDashboard').style.display = 'block';
     }
+    
 })
 
 document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
+    e.preventDefault();
     const strClassCode = document.querySelector('#txtClassCode').value
     const strClassCodeError = document.querySelector('#txtClassCodeError')
     let blnGeneralErrors = false
@@ -195,6 +221,7 @@ document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
 })
 
 document.querySelector('#btnCreateClassSubmit').addEventListener("click", (e) => {
+    e.preventDefault();
     let blnGeneralErrors = false
 
     const strClassName = document.querySelector('#txtClassName').value

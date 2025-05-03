@@ -12,12 +12,44 @@ function hideNavbar() {
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#navDashboard').addEventListener("click", (e) => {
         document.querySelector('#frmDashboard').style.display = 'block';
+        
         document.querySelector('#frmStudentClassView').style.display = 'none';
         document.querySelector('#frmInstructorClassView').style.display = 'none';
+        document.querySelector('#frmLeaveClass').style.display = 'none';
+        document.querySelector('#frmCreateClass').style.display = 'none';
+        document.querySelector('#frmJoinClass').style.display = 'none';
+        document.querySelector('#frmViewGroup').style.display = 'none';
+        document.querySelector('#frmViewReview').style.display = 'none';
+        document.querySelector('#frmWriteReview').style.display = 'none';
+        document.querySelector('#frmViewGroupInstructor').style.display = 'none';
+        document.querySelector('#frmViewDummyGroup').style.display = 'none';
+        document.querySelector('#frmViewReviewInstructor').style.display = 'none';
+        document.querySelector('#frmCreateReview').style.display = 'none';
+        document.querySelector('#divLandingPage').style.display = 'none';
+        document.querySelector('#frmRegistration').style.display = 'none';
+        document.querySelector('#frmLogin').style.display = 'none';
+        document.querySelector('#profileCard').style.display = 'none';
+
     });
 
     document.querySelector('#navLogout').addEventListener("click", (e) => {
         document.querySelector('#frmDashboard').style.display = 'none';
+        document.querySelector('#frmStudentClassView').style.display = 'none';
+        document.querySelector('#frmInstructorClassView').style.display = 'none';
+        document.querySelector('#frmLeaveClass').style.display = 'none';
+        document.querySelector('#frmCreateClass').style.display = 'none';
+        document.querySelector('#frmJoinClass').style.display = 'none';
+        document.querySelector('#frmViewGroup').style.display = 'none';
+        document.querySelector('#frmViewReview').style.display = 'none';
+        document.querySelector('#frmWriteReview').style.display = 'none';
+        document.querySelector('#frmViewGroupInstructor').style.display = 'none';
+        document.querySelector('#frmViewDummyGroup').style.display = 'none';
+        document.querySelector('#frmViewReviewInstructor').style.display = 'none';
+        document.querySelector('#frmCreateReview').style.display = 'none';
+        document.querySelector('#frmRegistration').style.display = 'none';
+        document.querySelector('#frmLogin').style.display = 'none';
+        document.querySelector('#profileCard').style.display = 'none';
+
         document.querySelector('#divLandingPage').style.display = 'block';
         hideNavbar();
     });

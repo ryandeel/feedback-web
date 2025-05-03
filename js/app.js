@@ -96,29 +96,9 @@ document.querySelector('#btnViewStudentReview').addEventListener("click", (e) =>
     document.querySelector('#frmViewReview').style.display = 'block';
 })
 
-document.querySelector('#btnBackStudent').addEventListener("click", (e) => {
-    document.querySelector('#frmViewGroup').style.display = 'none';
-    document.querySelector('#frmStudentClassView').style.display = 'block';
-})
-
-document.querySelector('#btnBackStudentReview').addEventListener("click", (e) => {
-    document.querySelector('#frmViewReview').style.display = 'none';
-    document.querySelector('#frmStudentClassView').style.display = 'block';
-})
-
-document.querySelector('#btnBackInstructor').addEventListener("click", (e) => {
-    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'block';
-})
-
 document.querySelector('#btnViewGroupInstructor').addEventListener("click", (e) => {
     document.querySelector('#frmInstructorClassView').style.display = 'none';
     document.querySelector('#frmViewGroupInstructor').style.display = 'block';
-})
-
-document.querySelector('#btnBackInstructorReview').addEventListener("click", (e) => {
-    document.querySelector('#frmViewReviewInstructor').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'block';
 })
 
 document.querySelector('#btnViewInstructorReview').addEventListener("click", (e) => {
@@ -131,28 +111,14 @@ document.querySelector('#btnCreateReview').addEventListener("click", (e) => {
     document.querySelector('#frmCreateReview').style.display = 'block';
 })
 
-document.querySelector('#btnBackCreateReview').addEventListener("click", (e) => {
-    document.querySelector('#frmCreateReview').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'block';
-})
-
 document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmStudentClassView').style.display = 'none';
     document.querySelector('#frmWriteReview').style.display = 'block';
 })
 
-document.querySelector('#btnBackWriteReview').addEventListener("click", (e) => {
-    document.querySelector('#frmWriteReview').style.display = 'none';
-    document.querySelector('#frmStudentClassView').style.display = 'block';
-})
-
 document.querySelector('#btnViewDummyGroup').addEventListener("click", (e) => {
     document.querySelector('#frmViewGroupInstructor').style.display = 'none';
     document.querySelector('#frmViewDummyGroup').style.display = 'block';
-})
-document.querySelector('#btnBackDummyGroup').addEventListener("click", (e) => {
-    document.querySelector('#frmViewDummyGroup').style.display = 'none';
-    document.querySelector('#frmViewGroupInstructor').style.display = 'block';
 })
 
 // Log In button functionality

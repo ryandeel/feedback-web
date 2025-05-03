@@ -159,7 +159,7 @@
         <form id="frmStudentClassView" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <h2 class="text-center" style="color: #5651a7;">TEMP3100</h2>
+                    <h2 id="studentClassTitle" class="text-center" style="color: #5651a7;"></h2>
                     <div id="divStudentReviews" class="gap-2">
                         <!-- Reviews will be dynamically added here -->
                         <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Group Members</button>
@@ -223,9 +223,10 @@
         <form id="frmInstructorClassView" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <h2 class="text-center" style="color: #5651a7;">TEMP3100</h2>
+                    <h2 id="instructorClassTitle" class="text-center" style="color: #5651a7;"></h2>
                     <div id="divInstructorReviews" class="gap-2">
                         <!-- Reviews will be dynamically added here -->
+                        <button id="btnCreateGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Create Groups</button>
                         <button id="btnViewGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Groups</button>
                         <button id="btnViewInstructorReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Student's Reviews</button>
                         <button id="btnCreateReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Create Review Prompt</button>
@@ -237,6 +238,34 @@
             </div>
         </form>
 
+        <form id="frmCreateGroupInstructor" style="display: none;">
+            <div class="card col-12">
+                <div class="card-body">
+                    <button id="btnBackInstructor" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <h2 class="text-center" style="color: #5651a7;">Create Group</h2>
+        
+                    <div class="mb-3">
+                        <label for="txtGroupName" class="form-label" style="color:#5651a7;">Group Name</label>
+                        <input type="text" id="txtGroupName" class="form-control" placeholder="Enter group name">
+                        <div id="txtGroupNameError" class="form-text text-danger"></div>
+                    </div>
+        
+                    <div class="mb-3">
+                        <label for="selectGroupStudents" class="form-label" style="color:#5651a7; font-weight:bold;">
+                            Select Students (by Email: shift/ctr click for multiselect)
+                        </label>
+                        <select id="selectGroupStudents" class="form-select" multiple size="6">
+                            <!-- Student options inserted here -->
+                        </select>
+                        <div id="selectGroupStudentsError" class="form-text text-danger"></div>
+                    </div>
+                    
+        
+                    <button id="btnSubmitCreateGroup" type="button" class="btn btn-primary col-12" style="background-color: #5651a7; border-color: #5651a7;">Create Group</button>
+                </div>
+            </div>
+        </form>
+        
         <!-- instructor related forms -->
 
         <form id="frmViewGroupInstructor" style="display: none;">

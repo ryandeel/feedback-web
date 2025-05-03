@@ -1,3 +1,127 @@
+async function loadAvailableStudentsForGroup() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const strUserId = localStorage.getItem("userId");
+    if (!strCourseId || !strUserId) return;
+
+    try {
+        const allEnrollments = await getAllEnrollments(); // from apicalls.js
+        const courseEnrollments = allEnrollments.filter(e => e.CourseID === strCourseId && e.UserID !== strUserId);
+
+        //
+        const allUsers = await (await fetch("http://localhost:8000/users")).json();
+        const enrolledUsers = courseEnrollments.map(enroll => allUsers.users.find(u => u.UserID === enroll.UserID)).filter(Boolean);
+
+        const select = document.querySelector("#selectGroupStudents");
+        select.innerHTML = '';
+
+        enrolledUsers.forEach(user => {
+            const option = document.createElement("option");
+            option.value = user.UserID;
+            option.text = `${user.FirstName} ${user.LastName} (${user.Email})`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Failed to load students for group:", err.message);
+    }
+}
+
+document.querySelector("#btnCreateGroupInstructor").addEventListener("click", () => {
+    document.querySelector("#frmInstructorClassView").style.display = "none";
+    document.querySelector("#frmCreateGroupInstructor").style.display = "block";
+    loadAvailableStudentsForGroup();
+});
+
+document.querySelector('#btnSubmitCreateGroup').addEventListener('click', async () => {
+    const strGroupName = document.querySelector('#txtGroupName').value.trim();
+    const select = document.querySelector('#selectGroupStudents');
+    const arrSelectedUserIDs = Array.from(select.selectedOptions).map(opt => opt.value);
+
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    console.log(strCourseID)
+
+    // Clear errors
+    document.querySelector('#txtGroupNameError').innerText = '';
+    document.querySelector('#selectGroupStudentsError').innerText = '';
+
+    let blnErrors = false;
+
+    if (!strCourseID) {
+        Swal.fire({ icon: 'error', title: 'No course selected' });
+        return;
+    }
+
+    if (!strGroupName) {
+        document.querySelector('#txtGroupNameError').innerText = "* Group name required";
+        blnErrors = true;
+    }
+
+    if (arrSelectedUserIDs.length === 0) {
+        document.querySelector('#selectGroupStudentsError').innerText = "* Select at least one student";
+        blnErrors = true;
+    }
+
+    if (blnErrors) return;
+
+    try {
+        // Step 1: Create group
+        const groupRes = await fetch('http://localhost:8000/course-groups', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ groupName: strGroupName, courseId: strCourseID })
+        });
+
+        const groupData = await groupRes.json();
+        if (!groupRes.ok) throw new Error(groupData.error || 'Group creation failed');
+
+        const strGroupID = groupData.groupId;
+
+        // Step 2: Add each student to the group
+        for (let userId of arrSelectedUserIDs) {
+            await fetch('http://localhost:8000/group-members', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ groupId: strGroupID, userId })
+            });
+        }
+
+        Swal.fire({ icon: 'success', title: 'Group created and students added!' });
+        document.querySelector('#frmCreateGroupInstructor').style.display = 'none';
+        document.querySelector('#frmInstructorClassView').style.display = 'block';
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'Group creation failed', text: err.message });
+    }
+});
+
+
+
+
+
+async function loadInstructorClassView() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    if (!strCourseId) return;
+
+    const courses = await getCourses();
+    const course = courses.find(c => c.CourseID === strCourseId);
+    if (!course) return;
+
+    document.querySelector('#instructorClassTitle').innerText = `${course.CourseName} (${course.CourseNumber})`;
+    // Populate more fields as needed
+}
+async function loadStudentClassView() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    if (!strCourseId) return;
+
+    const courses = await getCourses();
+    const course = courses.find(c => c.CourseID === strCourseId);
+    if (!course) return;
+
+    document.querySelector('#studentClassTitle').innerText = `${course.CourseName} (${course.CourseNumber})`;
+    // Populate more fields as needed
+}
+
 async function loadUserClasses() {
     const strUserID = localStorage.getItem("userId");
     if (!strUserID) return;
@@ -30,9 +154,11 @@ async function loadUserClasses() {
             btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
             btn.innerText = `Instructor: ${course.CourseName} (${course.CourseNumber})`;
             btn.addEventListener("click", () => {
+                localStorage.setItem("selectedCourseId", course.CourseID);
+                localStorage.setItem("selectedCourseRole", "instructor");
                 document.querySelector('#frmDashboard').style.display = 'none';
                 document.querySelector('#frmInstructorClassView').style.display = 'block';
-                // Optionally: store course info for use in other pages
+                loadInstructorClassView(); 
             });
             divClasses.appendChild(btn);
         });
@@ -45,9 +171,11 @@ async function loadUserClasses() {
             btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
             btn.innerText = `Student: ${course.CourseName} (${course.CourseNumber})`;
             btn.addEventListener("click", () => {
+                localStorage.setItem("selectedCourseId", course.CourseID);
+                localStorage.setItem("selectedCourseRole", "student");
                 document.querySelector('#frmDashboard').style.display = 'none';
                 document.querySelector('#frmStudentClassView').style.display = 'block';
-                // Optionally: store course info for use in other pages
+                loadStudentClassView();
             });
             divClasses.appendChild(btn);
         });

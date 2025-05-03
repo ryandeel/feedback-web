@@ -274,7 +274,7 @@
                     <button id="btnBackInstructor" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
                     <h2 class="text-center" style="color: #5651a7;">Groups</h2>
                     <div id="divGroupMembersInstructor" class="gap-2">
-                        <button id="btnViewDummyGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; border-color:gray; font-weight:bold;">dummyGroup</button>
+                        <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; border-color:gray; font-weight:bold;">dummyGroup</button>
                         <!-- Group members will be dynamically added here -->
                         <!-- <h3 class="text-center" style="color: #5651a7;">No reviews added yet!</h3> -->
                     </div>
@@ -282,7 +282,7 @@
             </div>
         </form>
 
-        <form id="frmViewDummyGroup" style="display: none;">
+        <form id="frmViewingGroupInstructor" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
                     <button id="btnBackDummyGroup" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
@@ -312,15 +312,37 @@
             <div class="card col-12">
                 <div class="card-body">
                     <button id="btnBackCreateReview" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
-                    <h2 class="text-center" style="color: #5651a7;">Create Review Prompt</h2>
+                    <h2 class="text-center" style="color: #5651a7;">Create Review Assignment</h2>
                     <input id="txtReviewTitle" class="form-control mt-3" type="text" placeholder="Review Title" aria-label="Input for review title">
                     <p style="color: #ff0033;" class='mt-1 mb-3'id="txtReviewPromptError"></p>
-                    <select id="selQuestionType" class="form-select mt-3" aria-label="Select for question type">
+                    <p>Start Date:</p>
+                    <input id="dtReviewStart" class="form-control mt-3" type="date" placeholder="Start Date">
+                    <p>End Date:</p>
+                    <input id="dtReviewDue" class="form-control mt-3" type="date" placeholder="Due Date">
+                    <select id="selReviewType" class="form-select mt-3" aria-label="Select review type">
+                        <option selected>Select Review Type</option>
+                        <option value="Peer to Peer">Peer to Peer</option>
+                        <option value="Peer to Teacher">Peer to Teacher</option>
+                    </select>
+                    <h4 class="mt-4" style="color:#5651a7;">Add Questions</h4>
+
+                    <select id="selQuestionType" class="form-select mt-2">
                         <option selected>Select Question Type</option>
                         <option value="Multiple Choice">Multiple Choice</option>
                         <option value="Likert Scale">Likert Scale</option>
                         <option value="Short Answer">Short Answer</option>
                     </select>
+
+                    <input id="txtQuestionText" class="form-control mt-2" type="text" placeholder="Question Text">
+
+                    <!-- Options only show if Multiple Choice is selected -->
+                    <input id="txtQuestionOptions" class="form-control mt-2" type="text" placeholder="Comma-separated options (for Multiple Choice only)">
+
+                    <button id="btnAddQuestion" class="btn btn-outline-primary col-12 mt-2" type="button">Add Question</button>
+
+                    <!-- Questions preview -->
+                    <ul id="ulReviewQuestions" class="list-group mt-3 mb-4"></ul>
+
                     <hr class="mt-4">
                     <button id="btnCreateReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
                 </div>

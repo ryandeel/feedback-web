@@ -360,7 +360,7 @@ document.querySelector('#btnCreateClassSubmit').addEventListener("click", async 
             Swal.fire({
                 icon: 'error',
                 title: 'Failed to create class',
-                text: err.message
+                text: 'Class code already exists or invalid input.'
             });
         }
     }

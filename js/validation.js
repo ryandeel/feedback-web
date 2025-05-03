@@ -67,23 +67,32 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
     const strEmail = document.querySelector('#txtEmail').value
     const strPassword = document.querySelector('#txtPassword').value
     const strConfirmPassword = document.querySelector('#txtConfirmPassword').value
-
+    const strTeams = document.querySelector('#txtTeams').value
+    
     let blnGeneralErrors = false
     let blnEmailError = false
     let blnFirstNameError = false
     let blnLastNameError = false
     let blnPasswordError = false
     let blnConfirmPasswordError = false
+    let blnTeamsError = false
     let strEmailError = ''
     let strFirstNameError = ''
     let strLastNameError = ''
     let strPasswordError = ''
     let strConfirmPasswordError = ''
+    let strTeamsError = ''
 
     if(!regEmailR.test(strEmail)){
         blnEmailError = true
         blnGeneralErrors = true
         strEmailError = "* Email address must be valid"
+    }
+
+    if(!regEmailR.test(strTeams)){
+        blnTeamsError = true
+        blnGeneralErrors = true
+        strTeamsError = "* Must be an Email address"
     }
 
     if(strFirstName.length < 1){
@@ -123,6 +132,15 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
         document.querySelector('#txtEmail').classList.remove("is-invalid")
     }
 
+    if(blnTeamsError == true){
+        document.querySelector('#txtTeamsError').innerText = strTeamsError
+        document.querySelector('#txtTeams').classList.add("is-invalid")
+    }
+    else if(blnTeamsError == false){
+        document.querySelector('#txtTeamsError').innerText = ''
+        document.querySelector('#txtTeams').classList.remove("is-invalid")
+    }
+    
     if(blnFirstNameError == true){
         document.querySelector('#txtFirstNameError').innerText = strFirstNameError
         document.querySelector('#txtFirstName').classList.add("is-invalid")

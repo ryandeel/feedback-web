@@ -221,7 +221,7 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
     
 })
 
-document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
+document.querySelector('#btnJoinClassSubmit').addEventListener("click", async (e) => {
     const strClassCode = document.querySelector('#txtClassCode').value
     const strClassCodeError = document.querySelector('#txtClassCodeError')
     let blnGeneralErrors = false
@@ -238,25 +238,52 @@ document.querySelector('#btnJoinClassSubmit').addEventListener("click", (e) => {
     }
 
     if(!blnGeneralErrors){
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Joined Class!",
-            showConfirmButton: false,
-            timer: 1500
-        });
-        document.querySelector('#frmJoinClass').style.display = 'none';
-        document.querySelector('#frmDashboard').style.display = 'block';
+        try {
+            // Step 1: Get course by code using API wrapper
+            const course = await getCourseByCode(strClassCode);
+            const strCourseID = course.CourseID;
+            const strUserID = localStorage.getItem("userId")
+            // Step 2: Create enrollment using API wrapper
+            await createEnrollment({
+                courseId: strCourseID,
+                userId: strUserID
+            });
+
+            // Step 3: Success feedback
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Joined Class!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            document.querySelector('#frmJoinClass').style.display = 'none';
+            document.querySelector('#frmDashboard').style.display = 'block';
+
+            // Optional: refresh class list
+            // await loadUserClasses();
+
+        } catch (err) {
+            Swal.fire({ icon: "error", title: "Join failed", text: err.message });
+        }
     }
 })
 
-document.querySelector('#btnCreateClassSubmit').addEventListener("click", (e) => {
+document.querySelector('#btnCreateClassSubmit').addEventListener("click", async (e) => {
     e.preventDefault();
     let blnGeneralErrors = false
 
     const strClassName = document.querySelector('#txtClassName').value
     const strClassCode = document.querySelector('#txtCreateClassCode').value
-
+    const strCourseNumber = document.querySelector('#txtCourseNumber').value.trim();
+    const strCourseSection = document.querySelector('#txtCourseSection').value.trim();
+    const strCourseTerm = document.querySelector('#txtCourseTerm').value.trim();
+    document.querySelector('#txtClassNameError').innerText = '';
+    document.querySelector('#txtCreateCodeError').innerText = '';
+    document.querySelector('#txtCourseNumberError').innerText = '';
+    document.querySelector('#txtCourseSectionError').innerText = '';
+    document.querySelector('#txtCourseTermError').innerText = '';
     if(strClassName.length < 1){
         blnGeneralErrors = true
         document.querySelector('#txtClassNameError').innerText = "* Must enter a class name"
@@ -266,17 +293,49 @@ document.querySelector('#btnCreateClassSubmit').addEventListener("click", (e) =>
         blnGeneralErrors = true
         document.querySelector('#txtCreateCodeError').innerText = "* Must enter a class code"
     }
+    if (strCourseNumber.length < 1) {
+        blnGeneralErrors = true;
+        document.querySelector('#txtCourseNumberError').innerText = "* Must enter a course number";
+    }
+
+    if (strCourseSection.length < 1) {
+        blnGeneralErrors = true;
+        document.querySelector('#txtCourseSectionError').innerText = "* Must enter a section";
+    }
+
+    if (strCourseTerm.length < 1) {
+        blnGeneralErrors = true;
+        document.querySelector('#txtCourseTermError').innerText = "* Must enter a term";
+    }
 
     if(!blnGeneralErrors){
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Class Created!",
-            showConfirmButton: false,
-            timer: 1500
-        });
-        document.querySelector('#frmCreateClass').style.display = 'none';
-        document.querySelector('#frmDashboard').style.display = 'block';
+        try {
+            const response = await createCourse({
+                courseName: strClassName,
+                courseCode: strClassCode,
+                courseNumber: strCourseNumber,
+                courseSection: strCourseSection,
+                courseTerm: strCourseTerm
+            });
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Class Created!",
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            document.querySelector('#frmCreateClass').style.display = 'none';
+            document.querySelector('#frmDashboard').style.display = 'block';
+
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Failed to create class',
+                text: err.message
+            });
+        }
     }
 })
 

@@ -276,16 +276,17 @@ app.post("/logs", (req, res) => {
     const strCourseNumber = req.body.courseNumber?.trim();
     const strCourseSection = req.body.courseSection?.trim();
     const strCourseTerm = req.body.courseTerm?.trim();
+    const strCourseCode = req.body.courseCode?.trim();
   
     // Basic validation
-    if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm) {
+    if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode) {
       return res.status(400).json({ error: "All fields are required." });
     }
   
     const strSQL = `
       INSERT INTO tblCourses (
-        CourseID, CourseName, CourseNumber, CourseSection, CourseTerm
-      ) VALUES (?, ?, ?, ?, ?)
+        CourseID, CourseName, CourseNumber, CourseSection, CourseTerm, CourseCode
+      ) VALUES (?, ?, ?, ?, ?, ?)
     `;
   
     const arrParams = [
@@ -293,7 +294,8 @@ app.post("/logs", (req, res) => {
       strCourseName,
       strCourseNumber,
       strCourseSection,
-      strCourseTerm
+      strCourseTerm,
+      strCourseCode
     ];
   
     db.run(strSQL, arrParams, function (err) {
@@ -842,16 +844,16 @@ app.put("/course/:courseId", (req, res) => {
   const strCourseNumber = req.body.courseNumber?.trim();
   const strCourseSection = req.body.courseSection?.trim();
   const strCourseTerm = req.body.courseTerm?.trim();
-
-  if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm) {
+  const strCourseCode = req.body.courseCode?.trim();
+  if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
   const strSQL = `
-    UPDATE tblCourses SET CourseName = ?, CourseNumber = ?, CourseSection = ?, CourseTerm = ?
+    UPDATE tblCourses SET CourseName = ?, CourseNumber = ?, CourseSection = ?, CourseTerm = ?, CourseCode = ?
     WHERE CourseID = ?
   `;
-  const arrParams = [strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCourseID];
+  const arrParams = [strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCourseCode, strCourseID];
 
   db.run(strSQL, arrParams, function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -1060,6 +1062,22 @@ app.get("/courses", (req, res) => {
     res.status(200).json({ status: "success", courses: rows });
   });
 });
+app.get("/courses/:courseCode", (req, res) => {
+    const strCourseCode = req.params.courseCode?.trim();
+  
+    if (!strCourseCode) {
+      return res.status(400).json({ error: "Course code is required." });
+    }
+  
+    const strSQL = `SELECT * FROM tblCourses WHERE CourseCode = ?`;
+    db.get(strSQL, [strCourseCode], (err, row) => {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!row) return res.status(404).json({ error: "Course not found." });
+  
+      res.status(200).json({ course: row });
+    });
+  });
+  
 
 // COURSE GROUPS
 app.get("/course-groups", (req, res) => {

@@ -1,3 +1,324 @@
+// Holds questions added by instructor
+const arrReviewQuestions = [];
+
+document.querySelector("#btnCreateReviewSubmit").addEventListener("click", async () => {
+    const strReviewTitle = document.querySelector("#txtReviewTitle").value.trim();
+    const strStartDate = document.querySelector("#dtReviewStart").value;
+    const strDueDate = document.querySelector("#dtReviewDue").value;
+    const strReviewType = document.querySelector("#selReviewType").value;
+    const strCourseID = localStorage.getItem("selectedCourseId");
+
+    document.querySelector("#txtReviewPromptError").innerText = "";
+
+    if (!strReviewTitle || !strStartDate || !strDueDate || strReviewType === "Select Review Type") {
+        document.querySelector("#txtReviewPromptError").innerText = "* Please complete all fields";
+        return;
+    }
+
+    if (arrReviewQuestions.length === 0) {
+        Swal.fire({ icon: 'error', title: 'Add at least one question before submitting' });
+        return;
+    }
+
+    try {
+        // Step 1: Create the assessment
+        const res = await fetch("http://localhost:8000/assessments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                courseId: strCourseID,
+                name: strReviewTitle,
+                type: strReviewType,
+                status: "Open",
+                startDate: new Date(strStartDate).toISOString(),
+                dueDate: new Date(strDueDate).toISOString(),
+                endDate: new Date(strDueDate).toISOString() // Use dueDate also as endDate
+            })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to create assessment");
+
+        const strAssessmentID = data.assessmentId;
+
+        // Step 2: Add each question
+        for (let question of arrReviewQuestions) {
+            await fetch("http://localhost:8000/assessment-questions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    assessmentId: strAssessmentID,
+                    questionType: question.questionType,
+                    questionNarrative: question.questionNarrative,
+                    helperText: question.helperText,
+                    options: question.options // backend expects this to be an array, it will JSON.stringify it
+                })
+            });
+        }
+
+        Swal.fire({ icon: "success", title: "Review assignment created successfully!" });
+
+        // Reset form + UI
+        arrReviewQuestions.length = 0;
+        document.querySelector("#ulReviewQuestions").innerHTML = "";
+        document.querySelector("#txtReviewTitle").value = "";
+        document.querySelector("#dtReviewStart").value = "";
+        document.querySelector("#dtReviewDue").value = "";
+        document.querySelector("#selReviewType").selectedIndex = 0;
+        document.querySelector("#frmCreateReview").style.display = "none";
+        document.querySelector("#frmInstructorClassView").style.display = "block";
+
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error creating review', text: err.message });
+    }
+});
+
+
+document.querySelector("#btnAddQuestion").addEventListener("click", () => {
+    const strQuestionText = document.querySelector("#txtQuestionText").value.trim();
+    const strQuestionType = document.querySelector("#selQuestionType").value;
+    const strOptions = document.querySelector("#txtQuestionOptions").value.trim();
+
+    const ul = document.querySelector("#ulReviewQuestions");
+
+    if (!strQuestionText || strQuestionType === "Select Question Type") {
+        Swal.fire({ icon: 'error', title: 'Missing info', text: 'Please enter a question and type' });
+        return;
+    }
+
+    if (strQuestionType === "Multiple Choice" && !strOptions) {
+        Swal.fire({ icon: 'error', title: 'Missing options', text: 'Provide comma-separated options' });
+        return;
+    }
+
+    // Create question object
+    const questionObj = {
+        questionType: strQuestionType,
+        questionNarrative: strQuestionText,
+        options: strQuestionType === "Multiple Choice" ? strOptions.split(",").map(o => o.trim()) : [],
+        helperText: ""
+    };
+
+    // Save and display
+    arrReviewQuestions.push(questionObj);
+
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    li.innerText = `${strQuestionType}: ${strQuestionText}` + (questionObj.options.length ? ` [${questionObj.options.join(", ")}]` : "");
+    ul.appendChild(li);
+
+    // Clear inputs
+    document.querySelector("#txtQuestionText").value = '';
+    document.querySelector("#txtQuestionOptions").value = '';
+    document.querySelector("#selQuestionType").selectedIndex = 0;
+});
+
+
+async function loadGroupMembers(groupID, groupName) {
+    const div = document.querySelector("#divDummyGroupMembers");
+    const allMembers = await getAllGroupMembers();
+    const allUsers = await getAllUsers();
+
+    const membersInGroup = allMembers.filter(m => m.GroupID === groupID);
+    div.innerHTML = "";
+
+    const title = document.querySelector("#frmViewingGroupInstructor h2");
+    title.innerText = `${groupName} Members`;
+
+    if (membersInGroup.length === 0) {
+        div.innerHTML = "<p class='text-center'>No members in this group yet.</p>";
+        return;
+    }
+
+    const ul = document.createElement("ul");
+    ul.classList.add("list-group");
+
+    membersInGroup.forEach(member => {
+        const user = allUsers.find(u => u.UserID === member.UserID);
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerText = `${user?.FirstName || "Unknown"} ${user?.LastName || ""} (${user?.Email || "N/A"})`;
+        ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
+}
+// View Group Members Form Logic
+async function loadInstructorGroups() {
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    if (!strCourseID) return;
+
+    const allGroups = await getAllCourseGroups(); // GET /course-groups
+
+    const divGroupMembers = document.querySelector("#divGroupMembersInstructor");
+    divGroupMembers.innerHTML = "";
+
+    const groupsForCourse = allGroups.filter(g => g.CourseID === strCourseID);
+
+    if (groupsForCourse.length === 0) {
+        divGroupMembers.innerHTML = `<h5 class="text-center" style="color:#5651a7;">No groups created yet</h5>`;
+        return;
+    }
+
+    groupsForCourse.forEach(group => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn col-12 mt-3";
+        btn.style = "color:#5651a7; border-color:gray; font-weight:bold;";
+        btn.innerText = group.GroupName;
+        btn.addEventListener("click", () => {
+            localStorage.setItem("selectedGroupID", group.GroupID);
+            loadGroupMembers(group.GroupID, group.GroupName);
+            document.querySelector("#frmViewGroupInstructor").style.display = "none";
+            document.querySelector("#frmViewingGroupInstructor").style.display = "block";
+        });
+        divGroupMembers.appendChild(btn);
+    });
+}
+
+
+// Back button handlers
+document.querySelector("#btnBackInstructor").addEventListener("click", () => {
+    document.querySelector("#frmViewGroupInstructor").style.display = "none";
+    document.querySelector("#frmInstructorClassView").style.display = "block";
+});
+
+document.querySelector("#btnBackDummyGroup").addEventListener("click", () => {
+    document.querySelector("#frmViewGroup").style.display = "none";
+    document.querySelector("#frmViewGroupInstructor").style.display = "block";
+});
+
+// Show group list when instructor clicks "View Groups"
+document.querySelector("#btnViewGroupInstructor").addEventListener("click", () => {
+    document.querySelector("#frmInstructorClassView").style.display = "none";
+    document.querySelector("#frmViewGroupInstructor").style.display = "block";
+    loadInstructorGroups();
+});
+
+
+async function loadAvailableStudentsForGroup() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const strUserId = localStorage.getItem("userId");
+    if (!strCourseId || !strUserId) return;
+
+    try {
+        const allEnrollments = await getAllEnrollments(); // from apicalls.js
+        const courseEnrollments = allEnrollments.filter(e => e.CourseID === strCourseId && e.UserID !== strUserId);
+
+        //
+        const allUsers = await (await fetch("http://localhost:8000/users")).json();
+        const enrolledUsers = courseEnrollments.map(enroll => allUsers.users.find(u => u.UserID === enroll.UserID)).filter(Boolean);
+
+        const select = document.querySelector("#selectGroupStudents");
+        select.innerHTML = '';
+
+        enrolledUsers.forEach(user => {
+            const option = document.createElement("option");
+            option.value = user.UserID;
+            option.text = `${user.FirstName} ${user.LastName} (${user.Email})`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Failed to load students for group:", err.message);
+    }
+}
+
+document.querySelector("#btnCreateGroupInstructor").addEventListener("click", () => {
+    document.querySelector("#frmInstructorClassView").style.display = "none";
+    document.querySelector("#frmCreateGroupInstructor").style.display = "block";
+    loadAvailableStudentsForGroup();
+});
+
+document.querySelector('#btnSubmitCreateGroup').addEventListener('click', async () => {
+    const strGroupName = document.querySelector('#txtGroupName').value.trim();
+    const select = document.querySelector('#selectGroupStudents');
+    const arrSelectedUserIDs = Array.from(select.selectedOptions).map(opt => opt.value);
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    console.log(strCourseID)
+
+    // Clear errors
+    document.querySelector('#txtGroupNameError').innerText = '';
+    document.querySelector('#selectGroupStudentsError').innerText = '';
+
+    let blnErrors = false;
+
+    if (!strCourseID) {
+        Swal.fire({ icon: 'error', title: 'No course selected' });
+        return;
+    }
+
+    if (!strGroupName) {
+        document.querySelector('#txtGroupNameError').innerText = "* Group name required";
+        blnErrors = true;
+    }
+
+    if (arrSelectedUserIDs.length === 0) {
+        document.querySelector('#selectGroupStudentsError').innerText = "* Select at least one student";
+        blnErrors = true;
+    }
+
+    if (blnErrors) return;
+
+    try {
+        // Step 1: Create group
+        const groupRes = await fetch('http://localhost:8000/course-groups', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ groupName: strGroupName, courseId: strCourseID })
+        });
+
+        const groupData = await groupRes.json();
+        if (!groupRes.ok) throw new Error(groupData.error || 'Group creation failed');
+
+        const strGroupID = groupData.groupId;
+
+        // Step 2: Add each student to the group
+        for (let userId of arrSelectedUserIDs) {
+            await fetch('http://localhost:8000/group-members', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ groupId: strGroupID, userId })
+            });
+        }
+
+        Swal.fire({ icon: 'success', title: 'Group created and students added!' });
+        document.querySelector('#frmCreateGroupInstructor').style.display = 'none';
+        document.querySelector('#frmInstructorClassView').style.display = 'block';
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'Group creation failed', text: err.message });
+    }
+});
+
+
+
+
+
+async function loadInstructorClassView() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    if (!strCourseId) return;
+
+    const courses = await getCourses();
+    const course = courses.find(c => c.CourseID === strCourseId);
+    if (!course) return;
+
+    document.querySelector('#instructorClassTitle').innerText = `${course.CourseName} (${course.CourseNumber})`;
+    // Populate more fields as needed
+}
+async function loadStudentClassView() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    if (!strCourseId) return;
+
+    const courses = await getCourses();
+    const course = courses.find(c => c.CourseID === strCourseId);
+    if (!course) return;
+
+    document.querySelector('#studentClassTitle').innerText = `${course.CourseName} (${course.CourseNumber})`;
+    // Populate more fields as needed
+}
+
 async function loadUserClasses() {
     const strUserID = localStorage.getItem("userId");
     if (!strUserID) return;
@@ -30,9 +351,11 @@ async function loadUserClasses() {
             btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
             btn.innerText = `Instructor: ${course.CourseName} (${course.CourseNumber})`;
             btn.addEventListener("click", () => {
+                localStorage.setItem("selectedCourseId", course.CourseID);
+                localStorage.setItem("selectedCourseRole", "instructor");
                 document.querySelector('#frmDashboard').style.display = 'none';
                 document.querySelector('#frmInstructorClassView').style.display = 'block';
-                // Optionally: store course info for use in other pages
+                loadInstructorClassView(); 
             });
             divClasses.appendChild(btn);
         });
@@ -45,9 +368,11 @@ async function loadUserClasses() {
             btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
             btn.innerText = `Student: ${course.CourseName} (${course.CourseNumber})`;
             btn.addEventListener("click", () => {
+                localStorage.setItem("selectedCourseId", course.CourseID);
+                localStorage.setItem("selectedCourseRole", "student");
                 document.querySelector('#frmDashboard').style.display = 'none';
                 document.querySelector('#frmStudentClassView').style.display = 'block';
-                // Optionally: store course info for use in other pages
+                loadStudentClassView();
             });
             divClasses.appendChild(btn);
         });

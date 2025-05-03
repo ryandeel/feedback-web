@@ -101,3 +101,36 @@ async function createEnrollment(objEnrollment) {
     return data; // includes { status: "success", enrollmentId }
 }
 
+async function getAllCourseGroups() {
+    try {
+      const res = await fetch("http://localhost:8000/course-groups");
+      const data = await res.json();
+      return data.groups || [];
+    } catch (err) {
+      console.error("Error fetching course groups:", err);
+      return [];
+    }
+  }
+  
+  async function getAllUsers() {
+    try {
+      const res = await fetch("http://localhost:8000/users");
+      const data = await res.json();
+      return data.users || [];
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      return [];
+    }
+  }
+  
+  async function getAllGroupMembers() {
+    try {
+      const res = await fetch("http://localhost:8000/group-members");
+      const data = await res.json();
+      return data.members || [];
+    } catch (err) {
+      console.error("Error fetching group members:", err);
+      return [];
+    }
+  }
+  

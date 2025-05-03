@@ -1,35 +1,62 @@
-// async function loadUserClasses() {
-//     const strUserID = localStorage.getItem("userId");
-//     if (!strUserID) return;
+async function loadUserClasses() {
+    const strUserID = localStorage.getItem("userId");
+    if (!strUserID) return;
 
-//     try {
-//         const enrollments = await getAllEnrollments();
-//         const courses = await getAllCourses();
+    try {
+        const arrCourses = await getAllCourses();
+        const arrEnrollments = await getUserEnrollments(strUserID);
 
-//         const userEnrollments = enrollments.filter(e => e.UserID === strUserID);
-//         const enrolledCourseIds = userEnrollments.map(e => e.CourseID);
+        // Instructor-created courses
+        const arrInstructorCourses = arrCourses.filter(course => course.CreatedBy === strUserID);
 
-//         const userCourses = courses.filter(c => enrolledCourseIds.includes(c.CourseID));
+        // Courses where user is enrolled (student)
+        const enrolledCourseIDs = arrEnrollments.map(e => e.CourseID);
+        const arrStudentCourses = arrCourses.filter(course =>
+            enrolledCourseIDs.includes(course.CourseID) && course.CreatedBy !== strUserID
+        );
 
-//         const divClasses = document.querySelector('#divClasses');
-//         divClasses.innerHTML = ''; // Clear previous content
+        const divClasses = document.querySelector('#divClasses');
+        divClasses.innerHTML = '';
 
-//         if (userCourses.length === 0) {
-//             divClasses.innerHTML = `<h5 style="color:#5651a7;">No classes enrolled</h5>`;
-//         } else {
-//             userCourses.forEach(course => {
-//                 const btn = document.createElement("button");
-//                 btn.className = "btn col-md-6 col-lg-auto fs-6";
-//                 btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
-//                 btn.innerText = `${course.CourseName} (${course.CourseNumber})`;
-//                 divClasses.appendChild(btn);
-//             });
-//         }
+        if (arrInstructorCourses.length === 0 && arrStudentCourses.length === 0) {
+            divClasses.innerHTML = `<h5 style="color:#5651a7;">No classes enrolled or created</h5>`;
+        }
 
-//     } catch (err) {
-//         console.error("Failed to load classes:", err.message);
-//     }
-// }
+        // Render instructor (created) classes
+        arrInstructorCourses.forEach(course => {
+            const btn = document.createElement("button");
+            btn.className = "btn col-md-6 col-lg-auto fs-6";
+            btn.type = "button";
+            btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
+            btn.innerText = `Instructor: ${course.CourseName} (${course.CourseNumber})`;
+            btn.addEventListener("click", () => {
+                document.querySelector('#frmDashboard').style.display = 'none';
+                document.querySelector('#frmInstructorClassView').style.display = 'block';
+                // Optionally: store course info for use in other pages
+            });
+            divClasses.appendChild(btn);
+        });
+
+        // Render student (enrolled) classes
+        arrStudentCourses.forEach(course => {
+            const btn = document.createElement("button");
+            btn.className = "btn col-md-6 col-lg-auto fs-6";
+            btn.type = "button";
+            btn.style = "min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;";
+            btn.innerText = `Student: ${course.CourseName} (${course.CourseNumber})`;
+            btn.addEventListener("click", () => {
+                document.querySelector('#frmDashboard').style.display = 'none';
+                document.querySelector('#frmStudentClassView').style.display = 'block';
+                // Optionally: store course info for use in other pages
+            });
+            divClasses.appendChild(btn);
+        });
+
+    } catch (err) {
+        console.error("Failed to load classes:", err.message);
+    }
+}
+
 
 document.querySelector('#btnRegister').addEventListener("click", (e) => {
     e.preventDefault();
@@ -209,7 +236,7 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             localStorage.setItem("userId", data.userId);
             document.querySelector('#frmLogin').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
-            //loadUserClasses();
+            loadUserClasses();
         }).catch(err => {
             Swal.fire({
                 icon: 'error',

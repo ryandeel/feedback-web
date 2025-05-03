@@ -277,16 +277,17 @@ app.post("/logs", (req, res) => {
     const strCourseSection = req.body.courseSection?.trim();
     const strCourseTerm = req.body.courseTerm?.trim();
     const strCourseCode = req.body.courseCode?.trim();
+    const strCreatedBy = req.body.createdBy?.trim();
   
     // Basic validation
-    if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode) {
+    if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode || !strCreatedBy) {
       return res.status(400).json({ error: "All fields are required." });
     }
   
     const strSQL = `
       INSERT INTO tblCourses (
-        CourseID, CourseName, CourseNumber, CourseSection, CourseTerm, CourseCode
-      ) VALUES (?, ?, ?, ?, ?, ?)
+        CourseID, CourseName, CourseNumber, CourseSection, CourseTerm, CourseCode, CreatedBy
+      ) VALUES (?, ?, ?, ?, ?, ?,?)
     `;
   
     const arrParams = [
@@ -295,7 +296,8 @@ app.post("/logs", (req, res) => {
       strCourseNumber,
       strCourseSection,
       strCourseTerm,
-      strCourseCode
+      strCourseCode,
+      strCreatedBy
     ];
   
     db.run(strSQL, arrParams, function (err) {
@@ -845,15 +847,16 @@ app.put("/course/:courseId", (req, res) => {
   const strCourseSection = req.body.courseSection?.trim();
   const strCourseTerm = req.body.courseTerm?.trim();
   const strCourseCode = req.body.courseCode?.trim();
-  if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode) {
+  const strCreatedBy = req.body.createdBy?.trim();
+  if (!strCourseName || !strCourseNumber || !strCourseSection || !strCourseTerm || !strCourseCode || !strCreatedBy) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
   const strSQL = `
-    UPDATE tblCourses SET CourseName = ?, CourseNumber = ?, CourseSection = ?, CourseTerm = ?, CourseCode = ?
+    UPDATE tblCourses SET CourseName = ?, CourseNumber = ?, CourseSection = ?, CourseTerm = ?, CourseCode = ?, CreatedBy = ?
     WHERE CourseID = ?
   `;
-  const arrParams = [strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCourseCode, strCourseID];
+  const arrParams = [strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCourseCode, strCreatedBy, strCourseID];
 
   db.run(strSQL, arrParams, function (err) {
     if (err) return res.status(500).json({ error: err.message });

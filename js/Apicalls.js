@@ -100,3 +100,4 @@ async function createEnrollment(objEnrollment) {
     if (!res.ok) throw new Error(data.error || "Enrollment failed.");
     return data; // includes { status: "success", enrollmentId }
 }
+

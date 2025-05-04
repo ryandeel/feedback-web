@@ -163,7 +163,7 @@ if (!emailRegex.test(strUserEmail)) {
 }
 
 // ✅ Supported social types
-const arrAllowedTypes = ["Discord", "Teams", "Slack"];
+const arrAllowedTypes = ["Discord", "Teams", "Phone"];
 if (!arrAllowedTypes.includes(strSocialType)) {
     return res.status(400).json({ error: "Unsupported social type." });
 }

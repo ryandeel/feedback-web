@@ -692,7 +692,7 @@ async function loadUserClasses() {
 }
 
 
-document.querySelector('#btnRegister').addEventListener("click", (e) => {
+document.querySelector('#btnRegister').addEventListener("click", async (e) => {
     e.preventDefault();
     const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
@@ -702,7 +702,9 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
     const strPassword = document.querySelector('#txtPassword').value
     const strConfirmPassword = document.querySelector('#txtConfirmPassword').value
     const strTeams = document.querySelector('#txtTeams').value
-    
+    const strDiscord = document.querySelector('#txtDiscord').value.trim();
+    const strPhone = document.querySelector('#txtPhone').value.trim();
+
     let blnGeneralErrors = false
     let blnEmailError = false
     let blnFirstNameError = false
@@ -716,7 +718,16 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
     let strPasswordError = ''
     let strConfirmPasswordError = ''
     let strTeamsError = ''
+    let blnPhoneError = false;
+    let strPhoneError = '';
 
+    const regPhoneR = /^\d{10}$/; // Adjust this pattern if needed
+
+    if (strPhone && !regPhoneR.test(strPhone)) {
+        blnPhoneError = true;
+        blnGeneralErrors = true;
+        strPhoneError = "* Phone number must be 10 digits";
+    }
     if(!regEmailR.test(strEmail)){
         blnEmailError = true
         blnGeneralErrors = true
@@ -810,13 +821,59 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
         document.querySelector('#txtConfirmPasswordError').innerText = ''
         document.querySelector('#txtConfirmPassword').classList.remove("is-invalid")
     }
-    if(!blnGeneralErrors){
-        createUser({
-            firstName: strFirstName,
-            lastName: strLastName,
-            email: strEmail,
-            password: strPassword
-        }).then(data => {
+    if (blnPhoneError) {
+        document.querySelector('#txtPhone').classList.add("is-invalid");
+        document.querySelector('#txtPhoneError').innerText = strPhoneError;
+    } else {
+        document.querySelector('#txtPhone').classList.remove("is-invalid");
+        document.querySelector('#txtPhoneError').innerText = '';
+    }
+    
+    if (!blnGeneralErrors) {
+        try {
+            const data = await createUser({
+                firstName: strFirstName,
+                lastName: strLastName,
+                email: strEmail,
+                password: strPassword
+            });
+    
+            if (strDiscord) {
+                await fetch("http://localhost:8000/socials", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userEmail: strEmail,
+                        socialType: "Discord",
+                        username: strDiscord
+                    })
+                });
+            }
+    
+            if (strTeams) {
+                await fetch("http://localhost:8000/socials", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userEmail: strEmail,
+                        socialType: "Teams",
+                        username: strTeams
+                    })
+                });
+            }
+    
+            if (strPhone) {
+                await fetch("http://localhost:8000/socials", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userEmail: strEmail,
+                        socialType: "Phone",
+                        username: strPhone
+                    })
+                });
+            }
+    
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -824,10 +881,12 @@ document.querySelector('#btnRegister').addEventListener("click", (e) => {
                 showConfirmButton: false,
                 timer: 1500
             });
-        }).catch(err => {
+    
+        } catch (err) {
             Swal.fire({ icon: 'error', title: 'Registration failed', text: err.message });
-        });
+        }
     }
+    
 })
 
 document.querySelector('#btnLogin').addEventListener("click", (e) => {

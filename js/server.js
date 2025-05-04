@@ -1049,6 +1049,26 @@ app.get("/socials", (req, res) => {
   });
 });
 
+app.get('/socials/:userId', (req, res) => {
+    const strUserID = req.params.userId;
+
+    const strSQL = `
+        SELECT s.SocialType, s.Username
+        FROM tblSocials s
+        JOIN tblUsers u ON s.Email = u.Email
+        WHERE u.UserID = ?
+    `;
+
+    db.all(strSQL, [strUserID], (err, rows) => {
+        if (err) {
+            console.error("DB Error:", err.message);
+            return res.status(500).json({ error: "Failed to fetch socials." });
+        }
+
+        res.status(200).json({ socials: rows });
+    });
+});
+
 // LOGS
 app.get("/logs", (req, res) => {
   const sql = "SELECT * FROM tblLogs";

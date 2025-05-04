@@ -519,10 +519,48 @@ async function loadStudentGroupMembers() {
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerText = `${user?.FirstName || "Unknown"} ${user?.LastName || ""} (${user?.Email || "N/A"})`;
+
+        // Add click event to fetch and display socials
+        li.addEventListener("click", async () => {
+            const socials = await fetchSocials(user.UserID);
+            displaySocialsModal(user, socials);
+        });
+
         ul.appendChild(li);
     });
 
     div.appendChild(ul);
+}
+
+// Fetch socials for a specific user
+async function fetchSocials(userId) {
+    try {
+        const res = await fetch(`http://localhost:8000/socials/${userId}`);
+        if (!res.ok) throw new Error("Failed to fetch socials.");
+        const data = await res.json();
+        console.log("Socials fetched:", data); //debugging
+        return data.socials;
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+// Display socials in a modal
+function displaySocialsModal(user, socials) {
+    const modalContent = `
+        <h5>${user.FirstName} ${user.LastName}'s Socials</h5>
+        <ul>
+            ${socials.map(social => `<li><strong>${social.SocialType}:</strong> ${social.Username}</li>`).join("")}
+        </ul>
+    `;
+
+    Swal.fire({
+        title: "Socials",
+        html: modalContent,
+        icon: "info",
+        confirmButtonText: "Close"
+    });
 }
 
 document.querySelector('#btnViewGroup').addEventListener("click", (e) => {

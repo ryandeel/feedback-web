@@ -1,6 +1,317 @@
 // Holds questions added by instructor
 const arrReviewQuestions = [];
 
+async function loadTargetUsers(strAssessmentType) {
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    const strUserID = localStorage.getItem("userId");
+    const selectTarget = document.querySelector("#selectReviewTarget");
+
+    selectTarget.innerHTML = ''; // Clear existing options
+
+    if (strAssessmentType === "Peer") {
+        try {
+            const members = await getGroupMembersForUserCourse(strUserID, strCourseID);
+    
+            if (members.length === 0) {
+                selectTarget.innerHTML = `<option disabled selected>No group members found</option>`;
+                return;
+            }
+    
+            members.forEach(user => {
+                const opt = document.createElement("option");
+                opt.value = user.UserID;
+                opt.text = `${user.FirstName} ${user.LastName} (${user.Email})`;
+                selectTarget.appendChild(opt);
+            });
+    
+        } catch (err) {
+            console.error(err);
+            selectTarget.innerHTML = `<option disabled selected>Error loading group members</option>`;
+        }
+    } else if (strAssessmentType === "Instructor") {
+        // Only show the instructor
+        const allCourses = await getCourses();
+        const course = allCourses.find(c => c.CourseID === strCourseID);
+
+        if (!course) {
+            selectTarget.innerHTML = `<option disabled selected>Instructor not found</option>`;
+            return;
+        }
+
+        const instructorID = course.CreatedBy;
+        const allUsers = await getAllUsers();
+        const instructor = allUsers.find(u => u.UserID === instructorID);
+
+        if (instructor) {
+            const opt = document.createElement("option");
+            opt.value = instructor.UserID;
+            opt.text = `${instructor.FirstName} ${instructor.LastName} (Instructor)`;
+            selectTarget.appendChild(opt);
+        }
+    }
+}
+
+
+async function loadReviewForm(strAssessmentID) {
+    console.log(strAssessmentID)
+    const div = document.querySelector("#divReviewQuestions");
+    const questions = await getAssessmentQuestions(strAssessmentID); // GET /assessment-questions/:id
+    div.innerHTML = '';
+
+    if (questions.length === 0) {
+        div.innerHTML = "<p>No questions found.</p>";
+        return;
+    }
+
+    questions.forEach(q => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "mb-3";
+
+        const label = document.createElement("label");
+        label.innerText = q.QuestionNarrative;
+        wrapper.appendChild(label);
+
+        if (q.QuestionType === "Short Answer") {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.className = "form-control";
+            input.dataset.questionId = q.QuestionID;
+            wrapper.appendChild(input);
+        }
+        else if (q.QuestionType === "Multiple Choice") {
+            const options = Array.isArray(q.Options) ? q.Options : JSON.parse(q.Options || "[]");
+        
+            options.forEach(optText => {
+                const optDiv = document.createElement("div");
+                optDiv.className = "form-check";
+        
+                const radio = document.createElement("input");
+                radio.type = "radio";  // ✅ use "radio" not "checkbox"
+                radio.name = q.QuestionID; // ✅ same name groups options
+                radio.value = optText;
+                radio.dataset.questionId = q.QuestionID;
+                radio.className = "form-check-input";
+        
+                const label = document.createElement("label");
+                label.className = "form-check-label";
+                label.innerText = optText;
+        
+                optDiv.appendChild(radio);
+                optDiv.appendChild(label);
+                wrapper.appendChild(optDiv);
+            });
+        }
+        else if (q.QuestionType === "Likert Scale") {
+            const strQuestionID = q.QuestionID;
+        
+            // Likert options
+            const likertOptions = [
+                { label: "Strongly Disagree"},
+                { label: "Disagree"},
+                { label: "Neutral"},
+                { label: "Agree"},
+                { label: "Strongly Agree"}
+            ];
+        
+            // Container for horizontal layout
+            const scaleWrapper = document.createElement("div");
+            scaleWrapper.className = "d-flex justify-content-between mt-2";
+            scaleWrapper.style.gap = "10px";
+        
+            likertOptions.forEach(option => {
+                const div = document.createElement("div");
+                div.className = "text-center";
+        
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = strQuestionID;
+                input.value = option.label;
+                input.dataset.questionId = strQuestionID;
+        
+                const lbl = document.createElement("label");
+                lbl.innerText = option.label;
+                lbl.className = "form-label d-block small";
+        
+                div.appendChild(input);
+                div.appendChild(lbl);
+                scaleWrapper.appendChild(div);
+            });
+        
+            wrapper.appendChild(scaleWrapper);
+        }                
+        div.appendChild(wrapper);
+    });
+}
+
+
+async function loadAvailableAssignments() {
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    const allAssessments = await getAllAssessments(); // assumes GET /assessments
+    const filtered = allAssessments.filter(a => a.CourseID === strCourseID);
+
+    const div = document.querySelector('#divAvailableAssignments');
+    div.innerHTML = '';
+
+    if (filtered.length === 0) {
+        div.innerHTML = "<p class='text-center'>No assignments available.</p>";
+        return;
+    }
+
+    filtered.forEach(a => {
+        const btn = document.createElement('button');
+        btn.className = "btn col-12 mb-3";
+        btn.type = "button"
+        btn.style = "color:#5651a7; border-color:gray;";
+        btn.innerText = `${a.Name} (${a.Type})`;
+        btn.addEventListener('click', () => {
+            localStorage.setItem("selectedAssessmentId", a.AssessmentID);
+            loadReviewForm(a.AssessmentID);  // show the fill-out form
+            loadTargetUsers(a.Type)
+            document.querySelector('#frmSelectReviewAssignment').style.display = 'none';
+            document.querySelector('#frmWriteReview').style.display = 'block';
+        });
+        div.appendChild(btn);
+    });
+}
+
+document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
+    loadAvailableAssignments(); //  CALL HERE
+});
+
+document.querySelector("#btnWriteReviewSubmit").addEventListener("click", async () => {
+    const strAssessmentID = localStorage.getItem("selectedAssessmentId");
+    const strUserID = localStorage.getItem("userId");
+    const strTargetUserID = document.querySelector("#selectReviewTarget").value;
+    const blnIsPublic = !document.querySelector("#checkPrivate").checked;
+    const questionWrappers = document.querySelectorAll("#divReviewQuestions > div");
+
+    if (!strTargetUserID) {
+        Swal.fire({ icon: "error", title: "Missing Target", text: "Please select someone to review." });
+        return;
+    }
+
+    if (questionWrappers.length === 0) {
+        Swal.fire({ icon: "error", title: "No Questions", text: "No questions found to answer." });
+        return;
+    }
+
+    try {
+        for (const wrapper of questionWrappers) {
+            const input = wrapper.querySelector("input, textarea, select");
+            const strQuestionID = input?.dataset.questionId;
+
+            let strResponse = "";
+
+            if (!strQuestionID) continue;
+
+            if (input.type === "radio") {
+                const selected = wrapper.querySelector(`input[name="${strQuestionID}"]:checked`);
+                if (!selected) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Incomplete Review",
+                        text: "Please answer all questions before submitting."
+                    });
+                    return;
+                }
+                strResponse = selected.value;
+            } else {
+                strResponse = input.value.trim();
+                if (!strResponse) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Incomplete Review",
+                        text: "Please answer all questions before submitting."
+                    });
+                    return;
+                }
+            }
+
+            await fetch("http://localhost:8000/assessment-responses", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    assessmentId: strAssessmentID,
+                    questionId: strQuestionID,
+                    userId: strUserID,
+                    targetUserId: strTargetUserID,
+                    response: strResponse,
+                    public: blnIsPublic
+                })
+            });
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Review submitted!",
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        // Reset form and go back
+        document.querySelector('#frmWriteReview').style.display = 'none';
+        document.querySelector('#frmStudentClassView').style.display = 'block';
+        document.querySelector("#divReviewQuestions").innerHTML = "";
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire({ icon: "error", title: "Submit failed", text: err.message });
+    }
+});
+
+
+
+async function loadStudentGroupMembers() {
+    const strUserId = localStorage.getItem("userId");
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divGroupMembers");
+
+    if (!strUserId || !strCourseId) {
+        div.innerHTML = "<p class='text-center text-danger'>Missing user or course information.</p>";
+        return;
+    }
+
+    const allGroupMembers = await getAllGroupMembers();  // GET /group-members
+    const allGroups = await getAllCourseGroups();        // GET /course-groups
+    const allUsers = await getAllUsers();                // GET /users
+
+    const studentGroup = allGroups.find(group =>
+        group.CourseID === strCourseId &&
+        allGroupMembers.some(m => m.GroupID === group.GroupID && m.UserID === strUserId)
+    );
+
+    div.innerHTML = "";
+
+    if (!studentGroup) {
+        div.innerHTML = "<p class='text-center'>You are not assigned to a group yet.</p>";
+        return;
+    }
+
+    const groupMembers = allGroupMembers.filter(m => m.GroupID === studentGroup.GroupID);
+
+    const ul = document.createElement("ul");
+    ul.classList.add("list-group");
+
+    groupMembers.forEach(member => {
+        const user = allUsers.find(u => u.UserID === member.UserID);
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerText = `${user?.FirstName || "Unknown"} ${user?.LastName || ""} (${user?.Email || "N/A"})`;
+        ul.appendChild(li);
+    });
+
+    div.appendChild(ul);
+}
+
+document.querySelector('#btnViewGroup').addEventListener("click", (e) => {
+    document.querySelector('#frmStudentClassView').style.display = 'none';
+    document.querySelector('#frmViewGroup').style.display = 'block';
+    loadStudentGroupMembers(); // ← Call the function here
+});
+
+
 document.querySelector("#btnCreateReviewSubmit").addEventListener("click", async () => {
     const strReviewTitle = document.querySelector("#txtReviewTitle").value.trim();
     const strStartDate = document.querySelector("#dtReviewStart").value;
@@ -118,7 +429,7 @@ async function loadGroupMembers(groupID, groupName) {
     const div = document.querySelector("#divDummyGroupMembers");
     const allMembers = await getAllGroupMembers();
     const allUsers = await getAllUsers();
-
+    console.log("All members:", allMembers);
     const membersInGroup = allMembers.filter(m => m.GroupID === groupID);
     div.innerHTML = "";
 
@@ -291,8 +602,6 @@ document.querySelector('#btnSubmitCreateGroup').addEventListener('click', async 
         Swal.fire({ icon: 'error', title: 'Group creation failed', text: err.message });
     }
 });
-
-
 
 
 

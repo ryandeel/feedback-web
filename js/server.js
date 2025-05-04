@@ -1127,6 +1127,29 @@ app.get("/assessment-questions", (req, res) => {
     res.status(200).json({ status: "success", questions: rows });
   });
 });
+//get assessment questions by assessment id
+app.get("/assessment-questions/:assessmentId", (req, res) => {
+  const strAssessmentID = req.params.assessmentId?.trim();
+
+  if (!strAssessmentID) {
+      return res.status(400).json({ error: "Assessment ID is required." });
+  }
+
+  const strSQL = `
+      SELECT * FROM tblAssessmentQuestions
+      WHERE AssessmentID = ?
+  `;
+
+  db.all(strSQL, [strAssessmentID], (err, rows) => {
+      if (err) {
+          console.error("DB Error:", err.message);
+          return res.status(500).json({ error: "Failed to retrieve questions." });
+      }
+
+      return res.status(200).json({ questions: rows });
+  });
+});
+
 
 // ASSESSMENT RESPONSES
 app.get("/assessment-responses", (req, res) => {
@@ -1143,6 +1166,37 @@ app.get("/sessions", (req, res) => {
   db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.status(200).json({ status: "success", sessions: rows });
+  });
+});
+
+// GET /group-members/by-user-course/:userId/:courseId
+app.get("/group-members/by-user-course/:userId/:courseId", (req, res) => {
+  const { userId, courseId } = req.params;
+
+  const strSQL = `
+  SELECT u.UserID, u.FirstName, u.LastName, u.Email
+  FROM tblGroupMembers gm
+  JOIN tblCourseGroups cg ON gm.GroupID = cg.GroupID
+  JOIN tblUsers u ON gm.UserID = u.UserID
+  WHERE cg.CourseID = ?
+    AND gm.GroupID = (
+      SELECT gm2.GroupID
+      FROM tblGroupMembers gm2
+      JOIN tblCourseGroups cg2 ON gm2.GroupID = cg2.GroupID
+      WHERE gm2.UserID = ? AND cg2.CourseID = ?
+      LIMIT 1
+    )
+    AND gm.UserID != ?
+`;
+
+
+  db.all(strSQL, [courseId, userId, courseId, userId], (err, rows) => {
+    if (err) {
+      console.error("Group member fetch error:", err.message);
+      return res.status(500).json({ error: "Failed to retrieve group members." });
+    }
+
+    res.json({ members: rows });
   });
 });
 

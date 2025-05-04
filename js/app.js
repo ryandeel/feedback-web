@@ -151,10 +151,7 @@ document.querySelector('#btnBackCreateReview').addEventListener("click", (e) => 
     document.querySelector('#frmInstructorClassView').style.display = 'block';
 })
 
-document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
-    document.querySelector('#frmStudentClassView').style.display = 'none';
-    document.querySelector('#frmWriteReview').style.display = 'block';
-})
+
 
 document.querySelector('#btnBackWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmWriteReview').style.display = 'none';

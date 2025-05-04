@@ -37,12 +37,16 @@
         <form class="card col-12 col-md-6 col-lg-4" id='frmRegistration' style="display:none;">
             <div class="card-body">
                 <h2 class="text-center" style="color: #5651a7;">Registration</h2>
-                <input id="txtFirstName" class="form-control mt-3" type="text" placeholder="First Name" aria-label="Input for first name">
+                <input id="txtFirstName" class="form-control mt-2" type="text" placeholder="First Name" aria-label="Input for first name">
                 <p style="color: #ff0033;" class='mt-1 mb-3' id="txtFirstNameError"></p>
                 <input id="txtLastName" class="form-control mt-2" type="text" placeholder="Last Name" aria-label="Input for last name">
                 <p style="color: #ff0033;" class='mt-1 mb-0'id="txtLastNameError"></p>
                 <input id="txtEmail" class="form-control mt-3" type="email" placeholder="Email" aria-label="Input for email">
-                <p style="color: #ff0033;" class='mt-1 mb-3'id="txtEmailError"></p>
+                <p style="color: #ff0033;" class='mt-1 mb-2'id="txtEmailError"></p>
+                <input id="txtPhone" class="form-control mt-2 mb-3" type="tel" placeholder="Phone Number" aria-label="Input for phone number">
+                <input id="txtTeams" class="form-control mt-2" type="email" placeholder="MS Teams" aria-label="Input for teams email">
+                <p style="color: #ff0033;" class='mt-1 mb-2'id="txtTeamsError"></p>
+                <input id="txtDiscord" class="form-control mt-2 mb-3" type="text" placeholder="Discord" aria-label="Input for discord">
                 <input id="txtPassword" class="form-control mt-2" type="password" placeholder="Password" aria-label="Input for password">
                 <div id="divPasswordErrors"></div>
                 <input id="txtConfirmPassword" class="form-control mt-2" type="password" placeholder="Confirm Password" aria-label="Input for confirming password">
@@ -203,6 +207,18 @@
             </div>
         </form>
 
+        <form id="frmSelectReviewAssignment" style="display:none;">
+            <div class="card col-12">
+                <div class="card-body">
+                    <button id="btnBackToStudentDashboard" class="btn btn-primary mb-4" type="button" style="background-color:#5651a7;">Back</button>
+                    <h2 class="text-center" style="color:#5651a7;">Select an Assignment</h2>
+                    <div id="divAvailableAssignments" class="mt-4">
+                        <!-- Buttons for assignments will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </form>
+
         <form id="frmWriteReview" style="display:none;">
             <div class="card col-12">
                 <div class="card-body">
@@ -210,7 +226,12 @@
                     <h2 class="text-center" style="color: #5651a7;">Fill Out Review</h2>
                     <input id="checkPrivate" type="checkbox" aria-label="Checkbox for private review">
                     <label for="checkPrivate" class="form-label">Private Review</label>
-                    <p>placeholder: review information goes here</p>
+                    <p>Select person to send Review</p>
+                    <select id="selectReviewTarget" class="form-select mt-3 mb-3" aria-label="Select target user">
+                        <option selected disabled>Select person to review</option>
+                        <!-- dynamically filled with enrolled users or instructor -->
+                    </select>
+                    <div id="divReviewQuestions"></div>
                     <hr class="mt-4">
                     <button id="btnWriteReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
                 </div>
@@ -321,8 +342,8 @@
                     <input id="dtReviewDue" class="form-control mt-3" type="date" placeholder="Due Date">
                     <select id="selReviewType" class="form-select mt-3" aria-label="Select review type">
                         <option selected>Select Review Type</option>
-                        <option value="Peer to Peer">Peer to Peer</option>
-                        <option value="Peer to Teacher">Peer to Teacher</option>
+                        <option value="Peer">Peer to Peer</option>
+                        <option value="Instructor">Peer to Teacher</option>
                     </select>
                     <h4 class="mt-4" style="color:#5651a7;">Add Questions</h4>
 

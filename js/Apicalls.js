@@ -134,3 +134,37 @@ async function getAllCourseGroups() {
     }
   }
   
+  async function getAllAssessments() {
+    try {
+        const response = await fetch('http://localhost:8000/assessments');
+        const data = await response.json();
+        return data.assessments || []; // assumes response = { assessments: [...] }
+    } catch (err) {
+        console.error("Failed to get assessments:", err.message);
+        return [];
+    }
+}
+
+async function getAssessmentQuestions(strAssessmentId) {
+    try {
+        const response = await fetch(`http://localhost:8000/assessment-questions/${strAssessmentId}`);
+        const data = await response.json();
+        return data.questions || []; // assumes response = { questions: [...] }
+    } catch (err) {
+        console.error("Failed to get questions for assessment:", err.message);
+        return [];
+    }
+}
+
+async function getAllGroupMembers() {
+    const res = await fetch("http://localhost:8000/group-members");
+    const data = await res.json();
+    return data.members; // or res.json() if API returns array directly
+}
+
+async function getGroupMembersForUserCourse(userId, courseId) {
+    const res = await fetch(`http://localhost:8000/group-members/by-user-course/${userId}/${courseId}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to fetch group members");
+    return data.members;
+  }

@@ -168,3 +168,17 @@ async function getGroupMembersForUserCourse(userId, courseId) {
     if (!res.ok) throw new Error(data.error || "Failed to fetch group members");
     return data.members;
   }
+
+  async function getAllAssessmentResponses() {
+    const res = await fetch("http://localhost:8000/assessment-responses");
+    const data = await res.json();
+    return data.responses; // ✅ This ensures you're returning the actual array
+}
+
+async function getAssessmentQuestionsAll() {
+    const res = await fetch("http://localhost:8000/assessment-questions");
+    if (!res.ok) throw new Error("Failed to fetch assessment questions");
+    const data = await res.json();
+    return data.questions; // <-- fixed
+}
+

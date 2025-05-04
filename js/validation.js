@@ -1,6 +1,226 @@
 // Holds questions added by instructor
 const arrReviewQuestions = [];
 
+async function loadMyReviews() {
+    const userId = localStorage.getItem("userId");
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divDisplayStudentReviews");
+    div.innerHTML = '';
+
+    const [assessments, responses, questions, users] = await Promise.all([
+        getAllAssessments(),
+        getAllAssessmentResponses(),
+        getAssessmentQuestionsAll(),
+        getAllUsers()
+    ]);
+
+    const courseAssessments = assessments.filter(a => a.CourseID === strCourseId);
+    const userResponses = responses.filter(r => r.ReviewerUserID === userId && courseAssessments.some(a => a.AssessmentID === r.AssessmentID));
+
+    if (userResponses.length === 0) {
+        div.innerHTML = "<p class='text-center'>You haven't submitted any reviews.</p>";
+        return;
+    }
+
+    userResponses.forEach(resp => {
+        const question = questions.find(q => q.QuestionID === resp.QuestionID);
+        const target = users.find(u => u.UserID === resp.TargetUserID);
+        const card = document.createElement("div");
+        card.className = "card mb-3";
+        card.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
+                <p><strong>About:</strong> ${target?.FirstName} ${target?.LastName}</p>
+                <p><strong>Response:</strong> ${resp.Response}</p>
+            </div>
+        `;
+        div.appendChild(card);
+    });
+}
+
+async function loadPublicReviews() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divDisplayStudentReviews");
+    div.innerHTML = '';
+
+    const [assessments, responses, questions, users] = await Promise.all([
+        getAllAssessments(),
+        getAllAssessmentResponses(),
+        getAssessmentQuestionsAll(),
+        getAllUsers()
+    ]);
+
+    const courseAssessments = assessments.filter(a => a.CourseID === strCourseId);
+    const publicResponses = responses.filter(r => r.IsPublic === "true" && courseAssessments.some(a => a.AssessmentID === r.AssessmentID));
+
+    if (publicResponses.length === 0) {
+        div.innerHTML = "<p class='text-center'>No public reviews available.</p>";
+        return;
+    }
+
+    publicResponses.forEach(resp => {
+        const question = questions.find(q => q.QuestionID === resp.QuestionID);
+        const reviewer = users.find(u => u.UserID === resp.ReviewerUserID);
+        const target = users.find(u => u.UserID === resp.TargetUserID);
+        const card = document.createElement("div");
+        card.className = "card mb-3";
+        card.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
+                <p><strong>From:</strong> ${reviewer?.FirstName} ${reviewer?.LastName}</p>
+                <p><strong>About:</strong> ${target?.FirstName} ${target?.LastName}</p>
+                <p><strong>Response:</strong> ${resp.Response}</p>
+            </div>
+        `;
+        div.appendChild(card);
+    });
+}
+
+document.querySelector("#btnShowMyReviews").addEventListener("click", loadMyReviews);
+document.querySelector("#btnShowPublicReviews").addEventListener("click", loadPublicReviews);
+
+
+async function loadStudentReviews() {
+    const strUserID = localStorage.getItem("userId");
+    const strCourseID = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divDisplayStudentReviews");
+    div.innerHTML = "";
+
+    try {
+        const assessments = await getAllAssessments();
+        const responses = await getAllAssessmentResponses();
+        const users = await getAllUsers();
+        const questions = await getAssessmentQuestionsAll();
+
+        const relevantAssessments = assessments.filter(a => a.CourseID === strCourseID);
+
+        if (relevantAssessments.length === 0) {
+            div.innerHTML = "<p class='text-center'>No assessments found for this course.</p>";
+            return;
+        }
+
+        relevantAssessments.forEach(assessment => {
+            const h3 = document.createElement("h3");
+            h3.className = "mt-4";
+            h3.style.color = "#5651a7";
+            h3.innerText = `Assessment: ${assessment.Name}`;
+            div.appendChild(h3);
+
+            const relatedQuestions = questions.filter(q => q.AssessmentID === assessment.AssessmentID);
+
+            // ✅ Show:
+            // - responses the user wrote (ReviewerUserID === strUserID)
+            // - OR any public response (IsPublic === "true")
+            const visibleResponses = responses.filter(r =>
+                r.AssessmentID === assessment.AssessmentID &&
+                (r.ReviewerUserID === strUserID || r.IsPublic === "true")
+            );
+
+            if (visibleResponses.length === 0) {
+                const p = document.createElement("p");
+                p.innerText = "No responses to show.";
+                div.appendChild(p);
+                return;
+            }
+
+            visibleResponses.forEach(resp => {
+                const from = users.find(u => u.UserID === resp.ReviewerUserID);
+                const about = users.find(u => u.UserID === resp.TargetUserID);
+                const question = relatedQuestions.find(q => q.QuestionID === resp.QuestionID);
+
+                const card = document.createElement("div");
+                card.className = "card mb-3";
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
+                        <p><strong>From:</strong> ${from?.FirstName} ${from?.LastName} (${from?.Email})</p>
+                        <p><strong>About:</strong> ${about?.FirstName} ${about?.LastName} (${about?.Email})</p>
+                        <p><strong>Public:</strong> ${resp.IsPublic === "true" ? "Yes" : "No"}</p>
+                        <p><strong>Response:</strong> ${resp.Response}</p>
+                    </div>
+                `;
+                div.appendChild(card);
+            });
+        });
+
+    } catch (err) {
+        console.error(err);
+        div.innerHTML = `<p class="text-danger text-center">Failed to load your reviews: ${err.message}</p>`;
+    }
+}
+
+document.querySelector("#btnViewStudentReview").addEventListener("click", () => {
+    document.querySelector("#frmStudentClassView").style.display = "none";
+    document.querySelector("#frmViewReview").style.display = "block";
+    loadStudentReviews(); // <-- call the function here
+});
+
+async function loadInstructorReviews() {
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divInstructoViewReview");
+    div.innerHTML = ''; // Clear previous content
+
+    try {
+        const assessments = await getAllAssessments()
+        const responses = await getAllAssessmentResponses()
+        const users = await getAllUsers()
+        const questions = await getAssessmentQuestionsAll()
+        const courseAssessments = assessments.filter(a => a.CourseID === strCourseId);
+        if (courseAssessments.length === 0) {
+            div.innerHTML = "<p class='text-center'>No assessments found for this course.</p>";
+            return;
+        }
+
+        courseAssessments.forEach(assessment => {
+            const h3 = document.createElement("h3");
+            h3.className = "mt-4";
+            h3.style.color = "#5651a7";
+            h3.innerText = `Assessment: ${assessment.Name}`;
+            div.appendChild(h3);
+
+            const assessmentResponses = responses.filter(r => r.AssessmentID === assessment.AssessmentID);
+            if (assessmentResponses.length === 0) {
+                const p = document.createElement("p");
+                p.innerText = "No responses submitted yet.";
+                div.appendChild(p);
+                return;
+            }
+
+            const relatedQuestions = questions.filter(q => q.AssessmentID === assessment.AssessmentID);
+
+            assessmentResponses.forEach(resp => {
+                console.log("Response Object:", resp);
+                const user = users.find(u => u.UserID === resp.ReviewerUserID);
+                const target = users.find(u => u.UserID === resp.TargetUserID);
+                const question = relatedQuestions.find(q => q.QuestionID === resp.QuestionID);
+                const card = document.createElement("div");
+                card.className = "card mb-3";
+                card.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
+                        <p><strong>From:</strong> ${user?.FirstName} ${user?.LastName} (${user?.Email})</p>
+                        <p><strong>About:</strong> ${target?.FirstName} ${target?.LastName} (${target?.Email})</p>
+                        <p><strong>Public:</strong> ${resp.IsPublic === "true" ? "Yes" : "No"}</p>
+                        <p><strong>Response:</strong> ${resp.Response}</p>
+                    </div>
+                `;
+                div.appendChild(card);
+            });
+        });
+
+    } catch (err) {
+        console.error(err);
+        div.innerHTML = `<p class='text-danger text-center'>Failed to load reviews: ${err.message}</p>`;
+    }
+}
+
+document.querySelector("#btnViewInstructorReview").addEventListener("click", () => {
+    document.querySelector("#frmInstructorClassView").style.display = "none";
+    document.querySelector("#frmViewReviewInstructor").style.display = "block";
+    loadInstructorReviews(); // ← This loads all the reviews
+});
+
+
 async function loadTargetUsers(strAssessmentType) {
     const strCourseID = localStorage.getItem("selectedCourseId");
     const strUserID = localStorage.getItem("userId");
@@ -488,11 +708,6 @@ async function loadInstructorGroups() {
 }
 
 
-// Back button handlers
-document.querySelector("#btnBackInstructor").addEventListener("click", () => {
-    document.querySelector("#frmViewGroupInstructor").style.display = "none";
-    document.querySelector("#frmInstructorClassView").style.display = "block";
-});
 
 document.querySelector("#btnBackDummyGroup").addEventListener("click", () => {
     document.querySelector("#frmViewGroup").style.display = "none";
@@ -999,8 +1214,7 @@ document.querySelector('#btnJoinClassSubmit').addEventListener("click", async (e
             document.querySelector('#frmJoinClass').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
 
-            // Optional: refresh class list
-            // await loadUserClasses();
+            await loadUserClasses();
 
         } catch (err) {
             Swal.fire({ icon: "error", title: "Join failed", text: err.message });
@@ -1101,6 +1315,7 @@ document.querySelector('#btnLeaveClassSubmit').addEventListener("click", async (
         // dashboard view
         document.querySelector('#frmLeaveClass').style.display = 'none';
         document.querySelector('#frmDashboard').style.display = 'block';
+        await loadUserClasses()
     } catch (err) {
         Swal.fire({ icon: "error", title: "Failed to leave class", text: err.message });
     }

@@ -999,8 +999,7 @@ document.querySelector('#btnJoinClassSubmit').addEventListener("click", async (e
             document.querySelector('#frmJoinClass').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
 
-            // Optional: refresh class list
-            // await loadUserClasses();
+            loadUserClasses();
 
         } catch (err) {
             Swal.fire({ icon: "error", title: "Join failed", text: err.message });

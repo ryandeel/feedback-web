@@ -999,7 +999,7 @@ document.querySelector('#btnJoinClassSubmit').addEventListener("click", async (e
             document.querySelector('#frmJoinClass').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
 
-            loadUserClasses();
+            await loadUserClasses();
 
         } catch (err) {
             Swal.fire({ icon: "error", title: "Join failed", text: err.message });
@@ -1100,6 +1100,7 @@ document.querySelector('#btnLeaveClassSubmit').addEventListener("click", async (
         // dashboard view
         document.querySelector('#frmLeaveClass').style.display = 'none';
         document.querySelector('#frmDashboard').style.display = 'block';
+        await loadUserClasses()
     } catch (err) {
         Swal.fire({ icon: "error", title: "Failed to leave class", text: err.message });
     }

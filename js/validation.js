@@ -1053,7 +1053,8 @@ document.querySelector('#btnCreateClassSubmit').addEventListener("click", async 
                 courseCode: strClassCode,
                 courseNumber: strCourseNumber,
                 courseSection: strCourseSection,
-                courseTerm: strCourseTerm
+                courseTerm: strCourseTerm ,
+                createdBy: localStorage.getItem("userId")
             });
 
             Swal.fire({
@@ -1066,6 +1067,7 @@ document.querySelector('#btnCreateClassSubmit').addEventListener("click", async 
 
             document.querySelector('#frmCreateClass').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
+            await loadUserClasses(); // <- dynamically refresh course buttons
 
         } catch (err) {
             Swal.fire({

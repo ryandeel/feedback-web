@@ -488,11 +488,6 @@ async function loadInstructorGroups() {
 }
 
 
-// Back button handlers
-document.querySelector("#btnBackInstructor").addEventListener("click", () => {
-    document.querySelector("#frmViewGroupInstructor").style.display = "none";
-    document.querySelector("#frmInstructorClassView").style.display = "block";
-});
 
 document.querySelector("#btnBackDummyGroup").addEventListener("click", () => {
     document.querySelector("#frmViewGroup").style.display = "none";

@@ -121,10 +121,6 @@ document.querySelector('#btnBackStudentReview').addEventListener("click", (e) =>
     document.querySelector('#frmStudentClassView').style.display = 'block';
 })
 
-document.querySelector('#btnBackInstructor').addEventListener("click", (e) => {
-    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'block';
-})
 
 document.querySelector('#btnViewGroupInstructor').addEventListener("click", (e) => {
     document.querySelector('#frmInstructorClassView').style.display = 'none';
@@ -161,3 +157,19 @@ document.querySelector('#btnBackDummyGroup').addEventListener("click", (e) => {
     document.querySelector('#frmViewDummyGroup').style.display = 'none';
     document.querySelector('#frmViewGroupInstructor').style.display = 'block';
 })
+document.querySelector("#btnBackToStudentDashboard").addEventListener("click", () => {
+    document.querySelector("#frmSelectReviewAssignment").style.display = "none";
+    document.querySelector("#frmStudentClassView").style.display = "block";
+});
+
+document.querySelector("#btnBackInstructorFromGroupList").addEventListener("click", () => {
+    document.querySelector("#frmViewGroupInstructor").style.display = "none";
+    document.querySelector("#frmInstructorClassView").style.display = "block";
+});
+
+document.querySelector("#btnBackInstructorFromCreateGroup").addEventListener("click", () => {
+    document.querySelector("#frmCreateGroupInstructor").style.display = "none";
+    document.querySelector("#frmInstructorClassView").style.display = "block";
+});
+
+

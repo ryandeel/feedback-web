@@ -1153,7 +1153,7 @@ app.get("/assessment-questions/:assessmentId", (req, res) => {
 
 // ASSESSMENT RESPONSES
 app.get("/assessment-responses", (req, res) => {
-  const sql = "SELECT * FROM tblAssessmentResponses";
+  const sql = "SELECT * FROM tblAssessmentResponse";
   db.all(sql, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.status(200).json({ status: "success", responses: rows });

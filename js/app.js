@@ -125,7 +125,7 @@ document.querySelector('#btnCreateReview').addEventListener("click", (e) => {
 
 document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmStudentClassView').style.display = 'none';
-    document.querySelector('#frmWriteReview').style.display = 'block';
+    document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
 })
 
 // Log In button functionality

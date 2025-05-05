@@ -273,7 +273,6 @@ async function loadTargetUsers(strAssessmentType) {
 
 
 async function loadReviewForm(strAssessmentID) {
-    console.log(strAssessmentID)
     const div = document.querySelector("#divReviewQuestions");
     const questions = await getAssessmentQuestions(strAssessmentID); // GET /assessment-questions/:id
     div.innerHTML = '';

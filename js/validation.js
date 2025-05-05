@@ -550,7 +550,7 @@ async function fetchSocials(userId) {
 function displaySocialsModal(user, socials) {
     const modalContent = `
         <h5>${user.FirstName} ${user.LastName}'s Socials</h5>
-        <ul>
+        <ul class="no-bullets" style="list-style-type: none;">
             ${socials.map(social => `<li><strong>${social.SocialType}:</strong> ${social.Username}</li>`).join("")}
         </ul>
     `;

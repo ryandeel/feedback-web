@@ -830,6 +830,153 @@ async function loadGroupMembers(groupID, groupName) {
 
     div.appendChild(ul);
 }
+
+
+async function deleteGroup(strGroupID) {
+    try {
+        const res = await fetch(`http://localhost:8000/course-group/${strGroupID}`, {
+            method: "DELETE"
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || "Failed to delete group");
+        }
+
+        Swal.fire("Deleted!", "Group has been deleted.", "success");
+    } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message, "error");
+    }
+}
+
+async function updateGroupName(groupID, newName) {
+    const res = await fetch(`http://localhost:8000/course-group/${groupID}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ groupName: newName })
+    });
+    if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to update group name");
+    }
+}
+
+async function getGroupMembersForUserCourse(groupID) {
+    try {
+        const res = await fetch(`http://localhost:8000/group-members/${groupID}`);
+        if (!res.ok) throw new Error("Failed to fetch group members");
+        return await res.json();
+    } catch (err) {
+        console.error("Error fetching group members:", err);
+        return [];
+    }
+}
+
+async function getCourseEnrolledStudents(courseID) {
+    try {
+        const res = await fetch(`http://localhost:8000/enrollments/${courseID}`);
+        if (!res.ok) throw new Error("Failed to fetch course enrollments");
+        return await res.json(); // Expecting list of { UserID, Email, etc. }
+    } catch (err) {
+        console.error("Error fetching enrolled students:", err);
+        return [];
+    }
+}
+
+async function addStudentToGroup(groupId, userId) {
+    try {
+        const res = await fetch(`http://localhost:8000/group-members`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ groupId:groupId, userId:userId })
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || "Failed to add student to group.");
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error adding student to group:", err.message);
+        throw err;
+    }
+}
+
+async function removeStudentFromGroup(groupId, userId) {
+    try {
+        const res = await fetch(`http://localhost:8000/group-member/${groupId}/${userId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || "Failed to remove student from group.");
+        }
+
+        return await res.json();
+    } catch (err) {
+        console.error("Error removing student from group:", err.message);
+        throw err;
+    }
+}
+
+
+async function promptEditGroup(groupID, currentName) {
+    const currentMembers = await getGroupMembersForUserCourse(groupID); // implement this
+    const enrolledStudents = await getCourseEnrolledStudents(localStorage.getItem("selectedCourseId")); // implement this
+
+    // Create multiselect HTML
+    const currentMemberIDs = new Set(currentMembers.map(m => m.UserID));
+    const selectOptions = enrolledStudents.map(student => {
+        const selected = currentMemberIDs.has(student.UserID) ? 'selected' : '';
+        return `<option value="${student.UserID}" ${selected}>${student.Email}</option>`;
+    }).join('');
+
+    const { value: formValues } = await Swal.fire({
+        title: 'Edit Group',
+        html:
+            `<label>Group Name</label><input id="swalGroupName" class="swal2-input" value="${currentName}">` +
+            `<label>Select Students</label><select id="swalStudentSelect" class="swal2-select" multiple size="6">${selectOptions}</select>`,
+        focusConfirm: false,
+        preConfirm: () => {
+            const strNewName = document.getElementById('swalGroupName').value.trim();
+            const selectedStudentIDs = Array.from(document.getElementById('swalStudentSelect').selectedOptions).map(opt => opt.value);
+            if (!strNewName) return Swal.showValidationMessage('Group name is required');
+            return { name: strNewName, studentIDs: selectedStudentIDs };
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Update'
+    });
+
+    if (!formValues) return;
+
+    const { name: newName, studentIDs: updatedIDs } = formValues;
+
+    // Update group name if changed
+    if (newName !== currentName) {
+        await updateGroupName(groupID, newName);
+    }
+
+    // Compare and update membership
+    const currentIDs = currentMembers.map(m => m.UserID);
+    const toAdd = updatedIDs.filter(id => !currentIDs.includes(id));
+    const toRemove = currentIDs.filter(id => !updatedIDs.includes(id));
+
+    await Promise.all([
+        ...toAdd.map(id => addStudentToGroup(groupID, id)),       // implement
+        ...toRemove.map(id => removeStudentFromGroup(groupID, id)) // implement
+    ]);
+
+    await loadInstructorGroups();
+    Swal.fire('Success!', 'Group updated.', 'success');
+}
 // View Group Members Form Logic
 async function loadInstructorGroups() {
     const strCourseID = localStorage.getItem("selectedCourseId");
@@ -848,18 +995,78 @@ async function loadInstructorGroups() {
     }
 
     groupsForCourse.forEach(group => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "btn col-12 mt-3";
-        btn.style = "color:#5651a7; border-color:gray; font-weight:bold;";
-        btn.innerText = group.GroupName;
+        const div = document.createElement("div");
+        div.className = "mt-3 border rounded p-2";
+
+        // View Button
+        const btnView = document.createElement("button");
+        btnView.className = "btn btn-sm btn-outline-primary btnViewGroup mr-2";
+        btnView.innerText = `View ${group.GroupName}`;
+        btnView.dataset.id = group.GroupID;
+        btnView.dataset.name = group.GroupName;
+        btnView.type="button"
+
+        // Edit Button
+        const btnEdit = document.createElement("button");
+        btnEdit.className = "btn btn-sm btn-outline-warning btnEditGroup mr-2";
+        btnEdit.innerText = "Edit";
+        btnEdit.dataset.id = group.GroupID;
+        btnEdit.dataset.name = group.GroupName;
+        btnEdit.type = "button";
+
+        // Delete Button
+        const btnDelete = document.createElement("button");
+        btnDelete.className = "btn btn-sm btn-outline-danger btnDeleteGroup";
+        btnDelete.innerText = "Delete";
+        btnDelete.dataset.id = group.GroupID;
+        btnDelete.dataset.name = group.GroupName;
+        btnDelete.type = "button";
+
+        // Append all
+        div.appendChild(btnView);
+        div.appendChild(btnEdit);
+        div.appendChild(btnDelete);
+        divGroupMembers.appendChild(div);
+    });
+
+    document.querySelectorAll(".btnViewGroup").forEach(btn => {
         btn.addEventListener("click", () => {
-            localStorage.setItem("selectedGroupID", group.GroupID);
-            loadGroupMembers(group.GroupID, group.GroupName);
+            const groupID = btn.dataset.id;
+            localStorage.setItem("selectedGroupID", groupID);
+            const groupName = btn.dataset.name
+            loadGroupMembers(groupID, groupName);
             document.querySelector("#frmViewGroupInstructor").style.display = "none";
             document.querySelector("#frmViewingGroupInstructor").style.display = "block";
         });
-        divGroupMembers.appendChild(btn);
+    });
+
+    document.querySelectorAll(".btnEditGroup").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const groupID = btn.dataset.id;
+            const groupName = btn.dataset.name;
+            localStorage.setItem("selectedGroupID", groupID);
+            promptEditGroup(groupID, groupName);
+        });
+    });
+
+    document.querySelectorAll(".btnDeleteGroup").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const groupID = btn.dataset.id;
+            const confirmDelete = await Swal.fire({
+                title: "Are you sure?",
+                text: "This will permanently delete the group.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            });
+
+            if (confirmDelete.isConfirmed) {
+                await deleteGroup(groupID);
+                await loadInstructorGroups(); // Reload the list
+            }
+        });
     });
 }
 

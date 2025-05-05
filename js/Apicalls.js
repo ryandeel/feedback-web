@@ -1,5 +1,26 @@
 const API_BASE = 'http://localhost:8000'; // adjust if hosted elsewhere
 
+
+async function deleteGroup(strGroupID) {
+    try {
+        const res = await fetch(`http://localhost:8000/course-group/${strGroupID}`, {
+            method: "DELETE"
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || "Failed to delete group");
+        }
+
+        Swal.fire("Deleted!", "Group has been deleted.", "success");
+    } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message, "error");
+    }
+}
+
+  
 // Create a new user
 async function createUser(objUser) {
     const response = await fetch(`${API_BASE}/user`, {

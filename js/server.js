@@ -925,7 +925,7 @@ app.put("/course-group/:groupId", (req, res) => {
     UPDATE tblCourseGroups SET GroupName = ?
     WHERE GroupID = ?
   `;
-  const arrParams = [strGroupName, strCourseID, strGroupID];
+  const arrParams = [strGroupName, strGroupID];
 
   db.run(strSQL, arrParams, function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -1167,6 +1167,38 @@ app.get("/group-members", (req, res) => {
   });
 });
 
+app.get("/group-members/:groupID", (req, res) => {
+  const strGroupID = req.params.groupID;
+
+  const strSQL = `
+    SELECT gm.MembershipID, gm.GroupID, gm.UserID, u.FirstName, u.LastName, u.Email
+    FROM tblGroupMembers gm
+    JOIN tblUsers u ON gm.UserID = u.UserID
+    WHERE gm.GroupID = ?
+  `;
+
+  db.all(strSQL, [strGroupID], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+app.get("/enrollments/:courseID", (req, res) => {
+  const strCourseID = req.params.courseID;
+
+  const strSQL = `
+    SELECT e.EnrollmentID, e.CourseID, u.UserID, u.FirstName, u.LastName, u.Email
+    FROM tblEnrollments e
+    JOIN tblUsers u ON e.UserID = u.UserID
+    WHERE e.CourseID = ?
+  `;
+
+  db.all(strSQL, [strCourseID], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 // ENROLLMENTS
 app.get("/enrollments", (req, res) => {
   const sql = "SELECT * FROM tblEnrollments";
@@ -1263,6 +1295,22 @@ app.get("/group-members/by-user-course/:userId/:courseId", (req, res) => {
     }
 
     res.json({ members: rows });
+  });
+});
+
+app.delete("/group-member/:groupId/:userId", (req, res) => {
+  const strGroupID = req.params.groupId;
+  const strUserID = req.params.userId;
+
+  const strSQL = `
+    DELETE FROM tblGroupMembers
+    WHERE GroupID = ? AND UserID = ?
+  `;
+
+  db.run(strSQL, [strGroupID, strUserID], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0) return res.status(404).json({ error: "Student not found in group." });
+    res.status(200).json({ status: "success", removed: strUserID });
   });
 });
 

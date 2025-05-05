@@ -128,25 +128,6 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
 })
 
-// Log In button functionality
-document.querySelector('#btnLogin').addEventListener("click", (e) => {
-    const isValidLogin = true; // Replace this with the actual validation result from validation.js
-
-    if (isValidLogin) {
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Log In Success!",
-            showConfirmButton: false,
-            timer: 1500
-        });
-
-        // Show the dashboard and navigation bar
-        document.querySelector('#frmLogin').style.display = 'none';
-        document.querySelector('#frmDashboard').style.display = 'block';
-        showNavbar();
-    }
-});
 
 // Log Out button functionality
 document.querySelector('#btnLogout').addEventListener("click", (e) => {

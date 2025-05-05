@@ -1,5 +1,5 @@
-// bro this file LOL
-
+// This file contains the JavaScript code for handling the navigation and visibility of different forms in the application
+// Event listeners for buttons to show/hide forms
 document.querySelector('#btnStartRegister').addEventListener('click', (event) => {
     document.querySelector('#divLandingPage').style.display = 'none';
     document.querySelector('#frmRegistration').style.display = 'block';
@@ -20,11 +20,6 @@ document.querySelector('#btnSwapRegistration').addEventListener('click', (event)
     document.querySelector('#frmRegistration').style.display = 'block';
 });
 
-document.querySelector('#btnLogout').addEventListener("click", (e) => {
-    document.querySelector('#frmDashboard').style.display = 'none';
-    document.querySelector('#divLandingPage').style.display = 'block';
-    hideNavbar();
-});
 
 document.querySelector('#btnJoinClass').addEventListener("click", (e) => {
     document.querySelector('#frmDashboard').style.display = 'none';
@@ -128,23 +123,14 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
 })
 
-
-// Log Out button functionality
-document.querySelector('#btnLogout').addEventListener("click", (e) => {
-    document.querySelector('#frmDashboard').style.display = 'none';
-    document.querySelector('#divLandingPage').style.display = 'block';
-    hideNavbar();
-});
-
 // Navigation bar links
 document.querySelector('#navDashboard').addEventListener("click", (e) => {
+    hideAllForms();
     document.querySelector('#frmDashboard').style.display = 'block';
-    document.querySelector('#frmStudentClassView').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'none';
 });
 
 document.querySelector('#navLogout').addEventListener("click", (e) => {
-    document.querySelector('#frmDashboard').style.display = 'none';
+    hideAllForms();
     document.querySelector('#divLandingPage').style.display = 'block';
     hideNavbar();
 });
@@ -157,4 +143,38 @@ function showNavbar() {
 // Function to hide the navigation bar
 function hideNavbar() {
     document.querySelector('#navbar').style.display = 'none';
+}
+
+// Function to hide all forms and divs
+function hideAllForms() {
+    // Select all forms and divs that need to be hidden
+    const elementsToHide = [
+        '#frmRegistration',
+        '#frmLogin',
+        '#frmDashboard',
+        '#frmLeaveClass',
+        '#frmCreateClass',
+        '#frmJoinClass',
+        '#frmStudentClassView',
+        '#frmViewGroup',
+        '#frmViewReview',
+        '#frmSelectReviewAssignment',
+        '#frmWriteReview',
+        '#frmInstructorClassView',
+        '#frmCreateGroupInstructor',
+        '#frmViewGroupInstructor',
+        '#frmViewingGroupInstructor',
+        '#frmViewReviewInstructor',
+        '#frmCreateReview',
+        '#profileCard',
+        '#divLandingPage'
+    ];
+
+    // Loop through each element and hide it
+    elementsToHide.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
 }

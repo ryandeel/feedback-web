@@ -1020,30 +1020,30 @@ async function loadUserClasses() {
 
 document.querySelector('#btnRegister').addEventListener("click", async (e) => {
     e.preventDefault();
-    const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-    const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-    const strFirstName = document.querySelector('#txtFirstName').value
-    const strLastName = document.querySelector('#txtLastName').value
-    const strEmail = document.querySelector('#txtEmail').value
-    const strPassword = document.querySelector('#txtPassword').value
-    const strConfirmPassword = document.querySelector('#txtConfirmPassword').value
-    const strTeams = document.querySelector('#txtTeams').value
+    const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    const strFirstName = document.querySelector('#txtFirstName').value;
+    const strLastName = document.querySelector('#txtLastName').value;
+    const strEmail = document.querySelector('#txtEmail').value;
+    const strPassword = document.querySelector('#txtPassword').value;
+    const strConfirmPassword = document.querySelector('#txtConfirmPassword').value;
+    const strTeams = document.querySelector('#txtTeams').value;
     const strDiscord = document.querySelector('#txtDiscord').value.trim();
     const strPhone = document.querySelector('#txtPhone').value.trim();
 
-    let blnGeneralErrors = false
-    let blnEmailError = false
-    let blnFirstNameError = false
-    let blnLastNameError = false
-    let blnPasswordError = false
-    let blnConfirmPasswordError = false
-    let blnTeamsError = false
-    let strEmailError = ''
-    let strFirstNameError = ''
-    let strLastNameError = ''
-    let strPasswordError = ''
-    let strConfirmPasswordError = ''
-    let strTeamsError = ''
+    let blnGeneralErrors = false;
+    let blnEmailError = false;
+    let blnFirstNameError = false;
+    let blnLastNameError = false;
+    let blnPasswordError = false;
+    let blnConfirmPasswordError = false;
+    let blnTeamsError = false;
+    let strEmailError = '';
+    let strFirstNameError = '';
+    let strLastNameError = '';
+    let strPasswordError = '';
+    let strConfirmPasswordError = '';
+    let strTeamsError = '';
     let blnPhoneError = false;
     let strPhoneError = '';
 
@@ -1054,98 +1054,98 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
         blnGeneralErrors = true;
         strPhoneError = "* Phone number must be 10 digits";
     }
-    if(!regEmailR.test(strEmail)){
-        blnEmailError = true
-        blnGeneralErrors = true
-        strEmailError = "* Email address must be valid"
+    if (!regEmailR.test(strEmail)) {
+        blnEmailError = true;
+        blnGeneralErrors = true;
+        strEmailError = "* Email address must be valid";
     }
 
-    if(!regEmailR.test(strTeams)){
-        blnTeamsError = true
-        blnGeneralErrors = true
-        strTeamsError = "* Must be an Email address"
+    if (!regEmailR.test(strTeams)) {
+        blnTeamsError = true;
+        blnGeneralErrors = true;
+        strTeamsError = "* Must be an Email address";
     }
 
-    if(strFirstName.length < 1){
-        blnFirstNameError = true
-        blnGeneralErrors = true
-        strFirstNameError = "* Must enter a first name"
+    if (strFirstName.length < 1) {
+        blnFirstNameError = true;
+        blnGeneralErrors = true;
+        strFirstNameError = "* Must enter a first name";
     }
 
-    if(strLastName.length < 1){
-        blnLastNameError = true
-        blnGeneralErrors = true
-        strLastNameError = "* Must enter a last name"
+    if (strLastName.length < 1) {
+        blnLastNameError = true;
+        blnGeneralErrors = true;
+        strLastNameError = "* Must enter a last name";
     }
 
-    if(!regPasswordR.test(strPassword)){
-        blnPasswordError = true
-        blnGeneralErrors = true
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must be at least 8 characters</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must include at least one digit</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must have at least one uppercase and one lowercase letter</p>"
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-3'>* Password must have at least one alphabetic character</p>"
+    if (!regPasswordR.test(strPassword)) {
+        blnPasswordError = true;
+        blnGeneralErrors = true;
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must be at least 8 characters</p>";
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must include at least one digit</p>";
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Password must have at least one uppercase and one lowercase letter</p>";
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-3'>* Password must have at least one alphabetic character</p>";
     }
 
-    if(strConfirmPassword != strPassword){
-        blnConfirmPasswordError = true
-        blnGeneralErrors = true
-        strConfirmPasswordError = '* Passwords must be matching'
+    if (strConfirmPassword != strPassword) {
+        blnConfirmPasswordError = true;
+        blnGeneralErrors = true;
+        strConfirmPasswordError = '* Passwords must be matching';
     }
 
 
-    if(blnEmailError == true){
-        document.querySelector('#txtEmailError').innerText = strEmailError
-        document.querySelector('#txtEmail').classList.add("is-invalid")
+    if (blnEmailError == true) {
+        document.querySelector('#txtEmailError').innerText = strEmailError;
+        document.querySelector('#txtEmail').classList.add("is-invalid");
     }
-    else if(blnEmailError == false){
-        document.querySelector('#txtEmailError').innerText = ''
-        document.querySelector('#txtEmail').classList.remove("is-invalid")
-    }
-
-    if(blnTeamsError == true){
-        document.querySelector('#txtTeamsError').innerText = strTeamsError
-        document.querySelector('#txtTeams').classList.add("is-invalid")
-    }
-    else if(blnTeamsError == false){
-        document.querySelector('#txtTeamsError').innerText = ''
-        document.querySelector('#txtTeams').classList.remove("is-invalid")
-    }
-    
-    if(blnFirstNameError == true){
-        document.querySelector('#txtFirstNameError').innerText = strFirstNameError
-        document.querySelector('#txtFirstName').classList.add("is-invalid")
-    }
-    else if(blnFirstNameError == false){
-        document.querySelector('#txtFirstNameError').innerText = ''
-        document.querySelector('#txtFirstName').classList.remove("is-invalid")
+    else if (blnEmailError == false) {
+        document.querySelector('#txtEmailError').innerText = '';
+        document.querySelector('#txtEmail').classList.remove("is-invalid");
     }
 
-    if(blnLastNameError == true){
-        document.querySelector('#txtLastNameError').innerText = strLastNameError
-        document.querySelector('#txtLastName').classList.add("is-invalid")
+    if (blnTeamsError == true) {
+        document.querySelector('#txtTeamsError').innerText = strTeamsError;
+        document.querySelector('#txtTeams').classList.add("is-invalid");
     }
-    else if(blnLastNameError == false){
-        document.querySelector('#txtLastNameError').innerText = ''
-        document.querySelector('#txtLastName').classList.remove("is-invalid")
-    }
-
-    if(blnPasswordError == true){
-        document.querySelector('#divPasswordErrors').innerHTML = strPasswordError
-        document.querySelector('#txtPassword').classList.add("is-invalid")
-    }
-    else if(blnPasswordError == false){
-        document.querySelector('#divPasswordErrors').innerHTML = ''
-        document.querySelector('#txtPassword').classList.remove("is-invalid")
+    else if (blnTeamsError == false) {
+        document.querySelector('#txtTeamsError').innerText = '';
+        document.querySelector('#txtTeams').classList.remove("is-invalid");
     }
 
-    if(blnConfirmPasswordError == true){
-        document.querySelector('#txtConfirmPasswordError').innerText = strConfirmPasswordError
-        document.querySelector('#txtConfirmPassword').classList.add("is-invalid")
+    if (blnFirstNameError == true) {
+        document.querySelector('#txtFirstNameError').innerText = strFirstNameError;
+        document.querySelector('#txtFirstName').classList.add("is-invalid");
     }
-    else if(blnConfirmPasswordError == false){
-        document.querySelector('#txtConfirmPasswordError').innerText = ''
-        document.querySelector('#txtConfirmPassword').classList.remove("is-invalid")
+    else if (blnFirstNameError == false) {
+        document.querySelector('#txtFirstNameError').innerText = '';
+        document.querySelector('#txtFirstName').classList.remove("is-invalid");
+    }
+
+    if (blnLastNameError == true) {
+        document.querySelector('#txtLastNameError').innerText = strLastNameError;
+        document.querySelector('#txtLastName').classList.add("is-invalid");
+    }
+    else if (blnLastNameError == false) {
+        document.querySelector('#txtLastNameError').innerText = '';
+        document.querySelector('#txtLastName').classList.remove("is-invalid");
+    }
+
+    if (blnPasswordError == true) {
+        document.querySelector('#divPasswordErrors').innerHTML = strPasswordError;
+        document.querySelector('#txtPassword').classList.add("is-invalid");
+    }
+    else if (blnPasswordError == false) {
+        document.querySelector('#divPasswordErrors').innerHTML = '';
+        document.querySelector('#txtPassword').classList.remove("is-invalid");
+    }
+
+    if (blnConfirmPasswordError == true) {
+        document.querySelector('#txtConfirmPasswordError').innerText = strConfirmPasswordError;
+        document.querySelector('#txtConfirmPassword').classList.add("is-invalid");
+    }
+    else if (blnConfirmPasswordError == false) {
+        document.querySelector('#txtConfirmPasswordError').innerText = '';
+        document.querySelector('#txtConfirmPassword').classList.remove("is-invalid");
     }
     if (blnPhoneError) {
         document.querySelector('#txtPhone').classList.add("is-invalid");
@@ -1154,7 +1154,7 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
         document.querySelector('#txtPhone').classList.remove("is-invalid");
         document.querySelector('#txtPhoneError').innerText = '';
     }
-    
+
     if (!blnGeneralErrors) {
         try {
             const data = await createUser({
@@ -1163,7 +1163,7 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
                 email: strEmail,
                 password: strPassword
             });
-    
+
             if (strDiscord) {
                 await fetch("http://localhost:8000/socials", {
                     method: "POST",
@@ -1175,7 +1175,7 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
                     })
                 });
             }
-    
+
             if (strTeams) {
                 await fetch("http://localhost:8000/socials", {
                     method: "POST",
@@ -1187,7 +1187,7 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
                     })
                 });
             }
-    
+
             if (strPhone) {
                 await fetch("http://localhost:8000/socials", {
                     method: "POST",
@@ -1199,7 +1199,7 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
                     })
                 });
             }
-    
+
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -1207,84 +1207,86 @@ document.querySelector('#btnRegister').addEventListener("click", async (e) => {
                 showConfirmButton: false,
                 timer: 1500
             });
-    
+
         } catch (err) {
             Swal.fire({ icon: 'error', title: 'Registration failed', text: err.message });
         }
     }
-    
-})
 
-document.querySelector('#btnLogin').addEventListener("click", (e) => {
-    const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-    const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/
-    const strEmail = document.querySelector('#txtLoginEmail').value
-    const strPassword = document.querySelector('#txtLoginPassword').value
+});
 
-    var blnGeneralErrors = false
-    let blnEmailError = false
-    let blnPasswordError = false
-    let strEmailError = ''
-    let strPasswordError = ''
+document.querySelector('#btnLogin').addEventListener("click", async (e) => {
+    e.preventDefault();
 
-    if(!regEmailR.test(strEmail)){
-        blnEmailError = true
-        blnGeneralErrors = true
-        strEmailError = "* Invalid Username"
+    // Validation logic
+    const regEmailR = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    const regPasswordR = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    const strEmail = document.querySelector('#txtLoginEmail').value;
+    const strPassword = document.querySelector('#txtLoginPassword').value;
+
+    let blnGeneralErrors = false;
+    let blnEmailError = false;
+    let blnPasswordError = false;
+    let strEmailError = '';
+    let strPasswordError = '';
+
+    if (!regEmailR.test(strEmail)) {
+        blnEmailError = true;
+        blnGeneralErrors = true;
+        strEmailError = "* Invalid Username";
     }
 
-    if(strPassword.length < 8){
-        blnPasswordError = true
-        blnGeneralErrors = true
-        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Invalid Password</p>"
+    if (strPassword.length < 8) {
+        blnPasswordError = true;
+        blnGeneralErrors = true;
+        strPasswordError += "<p style='color: #ff0033;' class='mt-1 mb-0'>* Invalid Password</p>";
     }
 
-    if(blnEmailError == true){
-        document.querySelector('#txtLoginEmailError').innerText = strEmailError
-        document.querySelector('#txtLoginEmail').classList.add("is-invalid")
-    }
-    else if(blnEmailError == false){
-        document.querySelector('#txtLoginEmailError').innerText = ''
-        document.querySelector('#txtLoginEmail').classList.remove("is-invalid")
-    }
-
-    if(blnPasswordError == true){
-        document.querySelector('#divLoginPasswordErrors').innerHTML = strPasswordError
-        document.querySelector('#txtLoginPassword').classList.add("is-invalid")
-    }
-    else if(blnPasswordError == false){
-        document.querySelector('#divLoginPasswordErrors').innerHTML = ''
-        document.querySelector('#txtLoginPassword').classList.remove("is-invalid")
+    if (blnEmailError) {
+        document.querySelector('#txtLoginEmailError').innerText = strEmailError;
+        document.querySelector('#txtLoginEmail').classList.add("is-invalid");
+    } else {
+        document.querySelector('#txtLoginEmailError').innerText = '';
+        document.querySelector('#txtLoginEmail').classList.remove("is-invalid");
     }
 
+    if (blnPasswordError) {
+        document.querySelector('#divLoginPasswordErrors').innerHTML = strPasswordError;
+        document.querySelector('#txtLoginPassword').classList.add("is-invalid");
+    } else {
+        document.querySelector('#divLoginPasswordErrors').innerHTML = '';
+        document.querySelector('#txtLoginPassword').classList.remove("is-invalid");
+    }
+
+    // If validation passes, proceed with login
     if (!blnGeneralErrors) {
-        createSession({
-            email: strEmail,
-            password: strPassword
-        }).then(data => {
+        try {
+            const response = await createSession({ email: strEmail, password: strPassword });
+            localStorage.setItem('sessionId', response.sessionId); // Store session ID
+            localStorage.setItem('userId', response.userId); // Store user ID
+
             Swal.fire({
-                icon: 'success',
-                title: 'Login successful!',
-                timer: 1000,
-                showConfirmButton: false
+                position: "center",
+                icon: "success",
+                title: "Log In Success!",
+                showConfirmButton: false,
+                timer: 1500
             });
-    
-            // You can store userId here if needed:
-            localStorage.setItem("userId", data.userId);
+
             document.querySelector('#frmLogin').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
             showNavbar();
-            loadUserClasses();
-        }).catch(err => {
+            loadUserClasses(); // Load user-specific classes
+        } catch (err) {
+            console.error(err);
             Swal.fire({
-                icon: 'error',
-                title: 'Login failed',
+                icon: "error",
+                title: "Login failed",
                 text: err.message
             });
-        });
+        }
     }
-    
-})
+});
 
 document.querySelector('#btnJoinClassSubmit').addEventListener("click", async (e) => {
     const strClassCode = document.querySelector('#txtClassCode').value

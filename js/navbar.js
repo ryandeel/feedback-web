@@ -37,30 +37,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.querySelector('#navLogout').addEventListener("click", (e) => {
-        document.querySelector('#frmDashboard').style.display = 'none';
-        document.querySelector('#frmStudentClassView').style.display = 'none';
-        document.querySelector('#frmInstructorClassView').style.display = 'none';
-        document.querySelector('#frmLeaveClass').style.display = 'none';
-        document.querySelector('#frmCreateClass').style.display = 'none';
-        document.querySelector('#frmJoinClass').style.display = 'none';
-        document.querySelector('#frmViewGroup').style.display = 'none';
-        document.querySelector('#frmViewReview').style.display = 'none';
-        document.querySelector('#frmWriteReview').style.display = 'none';
-        document.querySelector('#frmViewGroupInstructor').style.display = 'none';
-        document.querySelector('#frmViewDummyGroup').style.display = 'none';
-        document.querySelector('#frmViewReviewInstructor').style.display = 'none';
-        document.querySelector('#frmCreateReview').style.display = 'none';
-        document.querySelector('#frmRegistration').style.display = 'none';
-        document.querySelector('#frmLogin').style.display = 'none';
-        document.querySelector('#profileCard').style.display = 'none';
-        document.querySelector('#frmCreateGroupInstructor').style.display = 'none';
-        document.querySelector('#frmViewReviewInstructor').style.display = 'none';
-        document.querySelector('#frmCreateReview').style.display = 'none';
-        document.querySelector('#frmSelectReviewAssignment').style.display = 'none';
+    document.querySelector('#navLogout').addEventListener("click", async (e) => {
+        e.preventDefault();
 
-        document.querySelector('#divLandingPage').style.display = 'block';
-        hideNavbar();
+        // Get the session ID from localStorage
+        const sessionId = localStorage.getItem('sessionId');
+
+        if (sessionId) {
+            try {
+                // Call the logout API to delete the session
+                const response = await fetch(`http://localhost:8000/sessions/${sessionId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to log out.");
+                }
+
+                // Clear session data from localStorage
+                localStorage.removeItem('sessionId');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('selectedCourseId');
+
+                // Redirect to the landing page
+                document.querySelector('#frmDashboard').style.display = 'none';
+                document.querySelector('#divLandingPage').style.display = 'block';
+                hideNavbar();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logged out successfully!',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } catch (err) {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Logout failed',
+                    text: err.message
+                });
+            }
+        } else {
+            console.warn("No session ID found in localStorage");
+            // Redirect to the landing page
+            document.querySelector('#frmDashboard').style.display = 'none';
+            document.querySelector('#divLandingPage').style.display = 'block';
+            hideNavbar();
+        }
     });
     
     // Show the profile card when "My Profile" is clicked

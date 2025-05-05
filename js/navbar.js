@@ -64,13 +64,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Show the profile card when "My Profile" is clicked
-    document.querySelector('#navProfile').addEventListener('click', (e) => {
+    document.querySelector('#navProfile').addEventListener('click', async (e) => {
+        const allForms = document.querySelectorAll('[id^="frm"]');
+        allForms.forEach(form => form.style.display = 'none');
+        document.querySelector('#divLandingPage').style.display = 'none';
         document.querySelector('#profileCard').style.display = 'block';
+        const strUserId = localStorage.getItem("userId");
+        if (!strUserId) {
+            Swal.fire({ icon: 'error', title: 'No user ID found in storage.' });
+            return;
+        }
+        try {
+            // Fetch all users and find the current one
+            const allUsers = await getAllUsers(); // Make sure this calls /users endpoint
+            const currentUser = allUsers.find(u => u.UserID === strUserId);
+    
+            if (!currentUser) {
+                Swal.fire({ icon: 'error', title: 'User not found' });
+                return;
+            }
+    
+            const strName = `${currentUser.FirstName} ${currentUser.LastName}`;
+            const strEmail = currentUser.Email;
+    
+            // Populate profile fields
+            document.querySelector("#profileName").textContent = strName;
+            document.querySelector("#profileEmail").textContent = strEmail;
+    
+            // Load socials using email (or switch this to userId if your API supports it)
+            loadUserSocials(strUserId); // or use Email if that's what your endpoint expects
+        } catch (err) {
+            Swal.fire({ icon: 'error', title: 'Failed to load user info', text: err.message });
+        }
     });
     
     // Hide the profile card when the "Close" button is clicked
     document.querySelector('#btnCloseProfile').addEventListener('click', (e) => {
         const profileCard = document.querySelector('#profileCard');
         profileCard.style.display = 'none';
+        document.querySelector('#frmDashboard').style.display = 'block';
     });
 });

@@ -1,6 +1,85 @@
 // Holds questions added by instructor
 const arrReviewQuestions = [];
 
+document.querySelector("#btnSaveSocials").addEventListener("click", async () => {
+    const strUserID = localStorage.getItem("userId");
+    const inputs = document.querySelectorAll('#socialEditContainer input');
+
+    try {
+        for (const input of inputs) {
+            const strSocialType = input.dataset.socialtype;
+            const strUsername = input.value.trim();
+
+            // Skip empty entries
+            if (!strUsername) continue;
+
+            await fetch("http://localhost:8000/socials", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: strUserID,
+                    socialType: strSocialType,
+                    username: strUsername
+                })
+            });
+        }
+
+        Swal.fire({ icon: "success", title: "Socials updated!" });
+        document.querySelector("#editSocialsSection").style.display = "none";
+
+        // Reload socials
+        loadUserSocials(strUserID);
+
+    } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Failed to update socials.", "error");
+    }
+});
+
+async function loadUserSocials(userId) {
+    try {
+        const response = await fetch(`http://localhost:8000/socials/${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch socials.");
+        const data = await response.json();
+        const arrSocials = data.socials;
+         // Fill visible list
+         const ul = document.querySelector("#socialList");
+         ul.innerHTML = ""; // clear old
+ 
+         arrSocials.forEach(({ SocialType, Username }) => {
+             const li = document.createElement("li");
+             li.className = "list-group-item";
+             li.innerText = `${SocialType}: ${Username}`;
+             ul.appendChild(li);
+         });
+
+        // Fill edit fields
+        const divEdit = document.querySelector("#socialEditContainer");
+        divEdit.innerHTML = "";
+        arrSocials.forEach(({ SocialType, Username }, idx) => {
+            const div = document.createElement("div");
+            div.classList.add("mb-2");
+            div.innerHTML = `
+                <label class="form-label">${SocialType}</label>
+                <input type="text" class="form-control" data-socialtype="${SocialType}" value="${Username}">
+            `;
+            divEdit.appendChild(div);
+        });
+    } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Could not load socials.", "error");
+    }
+}
+document.querySelector("#btnEditSocials").addEventListener("click", () => {
+    document.querySelector("#editSocialsSection").style.display = "block";
+});
+document.querySelector("#btnSaveSocials").addEventListener("click", () => {
+    // Perform save logic here...
+    document.querySelector("#editSocialsSection").style.display = "none";
+});
+
+
+
 async function loadMyReviews() {
     const userId = localStorage.getItem("userId");
     const strCourseId = localStorage.getItem("selectedCourseId");

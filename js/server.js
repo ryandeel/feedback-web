@@ -839,6 +839,30 @@ app.put("/social/:socialId", (req, res) => {
     res.status(200).json({ status: "success", updated: strSocialID });
   });
 });
+app.put("/socials", (req, res) => {
+  const strUserID = req.body.userId;
+  const strSocialType = req.body.socialType?.trim();
+  const strUsername = req.body.username?.trim();
+
+  if (!strUserID || !strSocialType || !strUsername) {
+    return res.status(400).json({ error: "All fields required." });
+  }
+
+  const strSQL = `
+    UPDATE tblSocials 
+    SET Username = ?
+    WHERE SocialType = ? AND Email = (
+      SELECT Email FROM tblUsers WHERE UserID = ?
+    )
+  `;
+
+  db.run(strSQL, [strUsername, strSocialType, strUserID], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    if (this.changes === 0) return res.status(404).json({ error: "Social not found." });
+
+    res.status(200).json({ status: "success" });
+  });
+});
 
 // Course PUT
 app.put("/course/:courseId", (req, res) => {

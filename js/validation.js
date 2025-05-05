@@ -1194,6 +1194,7 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             localStorage.setItem("userId", data.userId);
             document.querySelector('#frmLogin').style.display = 'none';
             document.querySelector('#frmDashboard').style.display = 'block';
+            showNavbar();
             loadUserClasses();
         }).catch(err => {
             Swal.fire({

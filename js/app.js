@@ -128,36 +128,6 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
 })
 
-// Log In button functionality
-document.querySelector('#btnLogin').addEventListener("click", async (e) => {
-    const strEmail = document.querySelector('#txtLoginEmail').value;
-    const strPassword = document.querySelector('#txtLoginPassword').value;
-
-    try {
-        const response = await createSession({ email: strEmail, password: strPassword });
-        localStorage.setItem('sessionId', response.sessionId); // Store session ID
-        localStorage.setItem('userId', response.userId); // Store user ID
-
-        Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Log In Success!",
-            showConfirmButton: false,
-            timer: 1500
-        });
-
-        document.querySelector('#frmLogin').style.display = 'none';
-        document.querySelector('#frmDashboard').style.display = 'block';
-        showNavbar();
-    } catch (err) {
-        console.error(err);
-        Swal.fire({
-            icon: "error",
-            title: "Login failed",
-            text: err.message
-        });
-    }
-});
 
 // Log Out button functionality
 document.querySelector('#btnLogout').addEventListener("click", (e) => {

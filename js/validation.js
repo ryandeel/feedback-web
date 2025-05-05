@@ -821,6 +821,10 @@ async function loadGroupMembers(groupID, groupName) {
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerText = `${user?.FirstName || "Unknown"} ${user?.LastName || ""} (${user?.Email || "N/A"})`;
+        li.addEventListener("click", async () => {
+            const socials = await fetchSocials(user.UserID);
+            displaySocialsModal(user, socials);
+        });
         ul.appendChild(li);
     });
 

@@ -129,10 +129,15 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
 })
 
 // Log In button functionality
-document.querySelector('#btnLogin').addEventListener("click", (e) => {
-    const isValidLogin = true; // Replace this with the actual validation result from validation.js
+document.querySelector('#btnLogin').addEventListener("click", async (e) => {
+    const strEmail = document.querySelector('#txtLoginEmail').value;
+    const strPassword = document.querySelector('#txtLoginPassword').value;
 
-    if (isValidLogin) {
+    try {
+        const response = await createSession({ email: strEmail, password: strPassword });
+        localStorage.setItem('sessionId', response.sessionId); // Store session ID
+        localStorage.setItem('userId', response.userId); // Store user ID
+
         Swal.fire({
             position: "center",
             icon: "success",
@@ -141,10 +146,16 @@ document.querySelector('#btnLogin').addEventListener("click", (e) => {
             timer: 1500
         });
 
-        // Show the dashboard and navigation bar
         document.querySelector('#frmLogin').style.display = 'none';
         document.querySelector('#frmDashboard').style.display = 'block';
         showNavbar();
+    } catch (err) {
+        console.error(err);
+        Swal.fire({
+            icon: "error",
+            title: "Login failed",
+            text: err.message
+        });
     }
 });
 

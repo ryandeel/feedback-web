@@ -748,6 +748,19 @@ app.delete('/assessment-response/:responseId', (req, res) => {
   });
 });
 
+// SESSION
+app.delete('/sessions/:sessionId', (req, res) => {
+    const strSessionID = req.params.sessionId;
+
+    const strSQL = `DELETE FROM tblSessions WHERE SessionID = ?`;
+    db.run(strSQL, [strSessionID], function (err) {
+        if (err) {
+            return res.status(500).json({ error: "Failed to delete session." });
+        }
+        res.status(200).json({ status: "success", message: "Session ended." });
+    });
+});
+
 //update functions
 // Users PUT
 app.put("/user/:userId", (req, res) => {

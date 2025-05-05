@@ -1,5 +1,5 @@
-// bro this file LOL
-
+// This file contains the JavaScript code for handling the navigation and visibility of different forms in the application
+// Event listeners for buttons to show/hide forms
 document.querySelector('#btnStartRegister').addEventListener('click', (event) => {
     document.querySelector('#divLandingPage').style.display = 'none';
     document.querySelector('#frmRegistration').style.display = 'block';
@@ -123,38 +123,6 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmSelectReviewAssignment').style.display = 'block';
 })
 
-// document.querySelector('#btnLogin').addEventListener("click", async (e) => {
-//     e.preventDefault();
-//     const strEmail = document.querySelector('#txtLoginEmail').value;
-//     const strPassword = document.querySelector('#txtLoginPassword').value;
-
-//     try {
-//         const response = await createSession({ email: strEmail, password: strPassword });
-//         localStorage.setItem('sessionId', response.sessionId); // Store session ID
-//         localStorage.setItem('userId', response.userId); // Store user ID
-
-//         Swal.fire({
-//             position: "center",
-//             icon: "success",
-//             title: "Log In Success!",
-//             showConfirmButton: false,
-//             timer: 1500
-//         });
-
-//         document.querySelector('#frmLogin').style.display = 'none';
-//         document.querySelector('#frmDashboard').style.display = 'block';
-//         showNavbar();
-//         loadUserClasses(); // Load user-specific classes
-//     } catch (err) {
-//         console.error(err);
-//         Swal.fire({
-//             icon: "error",
-//             title: "Login failed",
-//             text: err.message
-//         });
-//     }
-// });
-
 // Navigation bar links
 document.querySelector('#navDashboard').addEventListener("click", (e) => {
     hideAllForms();
@@ -177,6 +145,7 @@ function hideNavbar() {
     document.querySelector('#navbar').style.display = 'none';
 }
 
+// Function to hide all forms and divs
 function hideAllForms() {
     // Select all forms and divs that need to be hidden
     const elementsToHide = [

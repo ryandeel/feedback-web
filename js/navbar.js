@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } else {
-            // If no session ID is found, just redirect to the landing page
+            console.warn("No session ID found in localStorage");
+            // Redirect to the landing page
             document.querySelector('#frmDashboard').style.display = 'none';
             document.querySelector('#divLandingPage').style.display = 'block';
             hideNavbar();

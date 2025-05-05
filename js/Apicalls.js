@@ -45,7 +45,7 @@ async function createSession(objCredentials) {
 
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Login failed');
-    return data;
+    return data; // Assumes response contains { sessionId, userId }
 }
 
 async function getAllEnrollments() {

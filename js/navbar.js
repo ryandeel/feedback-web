@@ -58,6 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem('sessionId');
                 localStorage.removeItem('userId');
                 localStorage.removeItem('selectedCourseId');
+                localStorage.removeItem('token');       
+                localStorage.removeItem('expiresAt');   
 
                 // Redirect to the landing page
                 document.querySelector('#frmDashboard').style.display = 'none';

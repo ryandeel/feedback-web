@@ -562,21 +562,25 @@ app.post("/logs", (req, res) => {
     });
   });
 
-//   function verifyToken(req, res, next) {
-//     const authHeader = req.headers.authorization;
-//     if (!authHeader) return res.status(401).json({ error: "Missing Authorization header" });
+  function verifyToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: "Missing Authorization header" });
   
-//     const token = authHeader.split(' ')[1];
-//     if (!token) return res.status(401).json({ error: "Missing token" });
+    const token = authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ error: "Missing token" });
   
-//     jwt.verify(token, strSecret, (err, decoded) => {
-//       if (err) return res.status(401).json({ error: "Invalid or expired token" });
+    jwt.verify(token, strSecret, (err, decoded) => {
+      if (err) return res.status(401).json({ error: "Invalid or expired token" });
   
-//       req.user = decoded;
-//       next();
-//     });
-//   }
-  
+      req.user = decoded;
+      next();
+    });
+  }
+  //verify if token is good
+    app.get("/me", verifyToken, (req, res) => {
+      res.json({ user: req.user });
+  });
+
   app.post("/sessions", (req, res) => {
     const strEmail = req.body.email?.trim().toLowerCase();
     const strPassword = req.body.password;

@@ -1,18 +1,55 @@
 // Holds questions added by instructor
 const arrReviewQuestions = [];
 
+window.addEventListener("DOMContentLoaded", async () => {
+    const strToken = localStorage.getItem("token");
+    const strUserId = localStorage.getItem("userId");
+
+    if (strToken && strUserId) {
+        try {
+            const res = await fetch("http://localhost:8000/me", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${strToken}`
+                }
+            });
+            if (!res.ok) throw new Error("Token verification failed");
+            document.querySelector("#divLandingPage").style.display = "none";
+            document.querySelector("#frmLogin").style.display = "none";
+            document.querySelector("#frmDashboard").style.display = "block";
+            showNavbar(); // you already call this in login
+            await loadUserClasses();
+        } catch (err) {
+            console.error("Auto-login failed:", err);
+            localStorage.clear(); // fallback: clear corrupted session
+        }
+    } else {
+        document.querySelector("#frmLogin").style.display = "block";
+    }
+});
+
+
 document.querySelector("#btnSaveSocials").addEventListener("click", async () => {
     const strUserID = localStorage.getItem("userId");
     const inputs = document.querySelectorAll('#socialEditContainer input');
-
+    const regPhone = /^\d{10}$/;
+    const regEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     try {
         for (const input of inputs) {
             const strSocialType = input.dataset.socialtype;
             const strUsername = input.value.trim();
-
-            // Skip empty entries
             if (!strUsername) continue;
+            if (strSocialType === "Phone" && !regPhone.test(strUsername)) {
+                Swal.fire({ icon: "error", title: "Invalid Phone", text: "Phone number must be exactly 10 digits." });
+                return;
+            }
 
+            if (strSocialType === "Teams" && !regEmail.test(strUsername)) {
+                Swal.fire({ icon: "error", title: "Invalid Teams Email", text: "Teams must be a valid email address." });
+                return;
+            }
+            // Skip empty entries
+            
             await fetch("http://localhost:8000/socials", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -23,7 +60,6 @@ document.querySelector("#btnSaveSocials").addEventListener("click", async () => 
                 })
             });
         }
-
         Swal.fire({ icon: "success", title: "Socials updated!" });
         document.querySelector("#editSocialsSection").style.display = "none";
 
@@ -1264,6 +1300,8 @@ document.querySelector('#btnLogin').addEventListener("click", async (e) => {
             const response = await createSession({ email: strEmail, password: strPassword });
             localStorage.setItem('sessionId', response.sessionId); // Store session ID
             localStorage.setItem('userId', response.userId); // Store user ID
+            localStorage.setItem('token', response.token);          // ✅ Store token
+            localStorage.setItem('expiresAt', response.expiresAt);  // Optional: if you want to expire it later
 
             Swal.fire({
                 position: "center",

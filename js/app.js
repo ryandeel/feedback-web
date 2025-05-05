@@ -157,13 +157,12 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
 
 // Navigation bar links
 document.querySelector('#navDashboard').addEventListener("click", (e) => {
+    hideAllForms();
     document.querySelector('#frmDashboard').style.display = 'block';
-    document.querySelector('#frmStudentClassView').style.display = 'none';
-    document.querySelector('#frmInstructorClassView').style.display = 'none';
 });
 
 document.querySelector('#navLogout').addEventListener("click", (e) => {
-    document.querySelector('#frmDashboard').style.display = 'none';
+    hideAllForms();
     document.querySelector('#divLandingPage').style.display = 'block';
     hideNavbar();
 });
@@ -176,4 +175,37 @@ function showNavbar() {
 // Function to hide the navigation bar
 function hideNavbar() {
     document.querySelector('#navbar').style.display = 'none';
+}
+
+function hideAllForms() {
+    // Select all forms and divs that need to be hidden
+    const elementsToHide = [
+        '#frmRegistration',
+        '#frmLogin',
+        '#frmDashboard',
+        '#frmLeaveClass',
+        '#frmCreateClass',
+        '#frmJoinClass',
+        '#frmStudentClassView',
+        '#frmViewGroup',
+        '#frmViewReview',
+        '#frmSelectReviewAssignment',
+        '#frmWriteReview',
+        '#frmInstructorClassView',
+        '#frmCreateGroupInstructor',
+        '#frmViewGroupInstructor',
+        '#frmViewingGroupInstructor',
+        '#frmViewReviewInstructor',
+        '#frmCreateReview',
+        '#profileCard',
+        '#divLandingPage'
+    ];
+
+    // Loop through each element and hide it
+    elementsToHide.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
 }

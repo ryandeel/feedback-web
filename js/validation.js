@@ -747,11 +747,6 @@ async function loadInstructorGroups() {
 
 
 
-document.querySelector("#btnBackDummyGroup").addEventListener("click", () => {
-    document.querySelector("#frmViewGroup").style.display = "none";
-    document.querySelector("#frmViewGroupInstructor").style.display = "block";
-});
-
 // Show group list when instructor clicks "View Groups"
 document.querySelector("#btnViewGroupInstructor").addEventListener("click", () => {
     document.querySelector("#frmInstructorClassView").style.display = "none";

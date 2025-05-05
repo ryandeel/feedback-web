@@ -128,11 +128,6 @@ document.querySelector('#btnWriteReview').addEventListener("click", (e) => {
     document.querySelector('#frmWriteReview').style.display = 'block';
 })
 
-document.querySelector('#btnViewDummyGroup').addEventListener("click", (e) => {
-    document.querySelector('#frmViewGroupInstructor').style.display = 'none';
-    document.querySelector('#frmViewDummyGroup').style.display = 'block';
-})
-
 // Log In button functionality
 document.querySelector('#btnLogin').addEventListener("click", (e) => {
     const isValidLogin = true; // Replace this with the actual validation result from validation.js

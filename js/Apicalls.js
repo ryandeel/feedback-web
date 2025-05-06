@@ -2,7 +2,7 @@ const API_BASE = 'http://localhost:8000'; // adjust if hosted elsewhere
 
 
 
-  
+
 // Create a new user
 async function createUser(objUser) {
     const response = await fetch(`${API_BASE}/user`, {

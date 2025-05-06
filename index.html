@@ -45,8 +45,8 @@
                 <p>Sign up now to get started with your group!</p>
             </article>
             <div class="mt-3 d-flex justify-content-center gap-3 w-100">
-                <button id="btnStartRegister" class="btn btn-primary w-100 w-md-25" style="background-color: #5651a7; border-color: #5651a7; max-width: 200px" type="button">Register</button>
-                <button id="btnStartLogin" class="btn btn-primary w-100 w-md-25" style="background-color: #5651a7; border-color: #5651a7; max-width: 200px" type="button">Log In</button>
+                <button id="btnStartRegister" class="btn btn-primary w-100 w-md-25" style="background-color: #5651a7; border-color: #5651a7; max-width: 200px" type="button" aria-label="Register account button">Register</button>
+                <button id="btnStartLogin" class="btn btn-primary w-100 w-md-25" style="background-color: #5651a7; border-color: #5651a7; max-width: 200px" type="button" aria-label="login account button">Log In</button>
             </div>
         </main>
     </div>
@@ -73,8 +73,8 @@
                 <input id="txtConfirmPassword" class="form-control mt-2" type="password" placeholder="Confirm Password" aria-label="Input for confirming password">
                 <p style="color: #ff0033;" class='mt-1 mb-3'id="txtConfirmPasswordError"></p>
                 <hr class="mt-4">
-                <button id="btnRegister" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Register</button>
-                <button id="btnSwapLogin" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;">Already have an account?</button>
+                <button id="btnRegister" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="Register account button">Register</button>
+                <button id="btnSwapLogin" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;" aria-label="Already have an account button">Already have an account?</button>
             </div>
         </form>
 
@@ -92,8 +92,8 @@
                     i added a div here and removed col-12 from the other button so they can be side by side on top of the log in
                     To remember the user we could have that google popup that saves the password for the site.-->
                 </div>
-                <button id="btnLogin" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Log In</button>
-                <button id="btnSwapRegistration" class="btn btn-link col-12" type="button" style="color: #5651a7">Don't have an account? Register Here.</button>
+                <button id="btnLogin" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="Login account button">Log In</button>
+                <button id="btnSwapRegistration" class="btn btn-link col-12" type="button" style="color: #5651a7" aria-label="Register account button">Don't have an account? Register Here.</button>
             </div>
         </form>
 
@@ -103,20 +103,20 @@
         <form id="frmDashboard" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <button id="btnLeaveClass" class="btn btn-primary col-12 mb-2" type="button" style="background-color: #5651a7; width: 150px; border-color: #5651a7;">Leave a Class</button>
+                    <button id="btnLeaveClass" class="btn btn-primary col-12 mb-2" type="button" style="background-color: #5651a7; width: 150px; border-color: #5651a7;" aria-label="Leave class button">Leave a Class</button>
                     <h1 class="text-center" style="color: #5651a7;">Dashboard</h1>
                     <div class="card">
                         <div class="card-body">
                             <div id="divClasses" class="d-flex flex-wrap gap-2 justify-content-center">
                                 <!-- classes will be added here -->
-                                <button id="btnTempClassStudent" class="btn col-md-6 col-lg-auto fs-6" type="button" style="min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;">tempClassStudent</button>
+                                <button id="btnTempClassStudent" class="btn col-md-6 col-lg-auto fs-6" type="button" style="min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;" >tempClassStudent</button>
                                 <button id="btnTempClassInstructor" class="btn col-md-6 col-lg-auto fs-6" type="button" style="min-width: 200px; height:115px; border-color:gray; color:#5651a7; font-weight:bold;">tempClassInstructor</button>
                                 </div>
                         </div>
                     </div>
                     <div class="d-flex flex-column flex-md-row gap-2 mt-4">
-                        <button id="btnJoinClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;">Join Class</button>
-                        <button id="btnCreateClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;">Create Class</button>
+                        <button id="btnJoinClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="Join class button">Join Class</button>
+                        <button id="btnCreateClass" class="btn btn-primary col-12 col-md-6" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="Create account button">Create Class</button>
                     </div>
                 </div>
             </div>
@@ -125,14 +125,14 @@
         <form id="frmLeaveClass" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <button id="btnBackToDashboardLeave" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <button id="btnBackToDashboardLeave" aria-label="Back to dashboard button" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
                     <h2 class="text-center" style="color: #5651a7;">Leave a Class</h2>
                     <p>Which class would you like to leave?</p>
                     <select id="selectLeaveClass" class="form-select mt-3" aria-label="Select class to leave">
                         <option selected>Select Class</option>
                     </select>
                     <hr class="mt-4">
-                    <button id="btnLeaveClassSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Leave Class</button>
+                    <button id="btnLeaveClassSubmit" aria-label="Submit to leave class button" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Leave Class</button>
                 </div>
             </div>
         </form>
@@ -140,7 +140,7 @@
         <form id="frmCreateClass" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <button id="btnBackToDashboardCreate" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <button id="btnBackToDashboardCreate" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7" aria-label="back to dashboard button">Back</button>
                     <h2 class="text-center" style="color: #5651a7;">Create Class</h2>
                     <input id="txtClassName" class="form-control mt-3" type="text" placeholder="Class Name" aria-label="Input for class name">
                     <p style="color: #ff0033;" class='mt-1 mb-3'id="txtClassNameError"></p>
@@ -153,8 +153,8 @@
                     <input id="txtCourseTerm" class="form-control mt-2" type="text" placeholder="Term (e.g. Fall 2025)" aria-label="Input for course term">
                     <p id="txtCourseTermError" style="color: #ff0033;" class="mt-1 mb-3"></p>
                     <hr class="mt-4">
-                    <button id="btnCreateClassSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Create Class</button>
-                    <button id="btnSwapJoinClass" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;">Join an existing class?</button>
+                    <button id="btnCreateClassSubmit" aria-label="Create class submit button" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Create Class</button>
+                    <button id="btnSwapJoinClass" aria-label="Join class submit button" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;">Join an existing class?</button>
                 </div>
             </div>
         </form>
@@ -162,13 +162,13 @@
         <form id="frmJoinClass" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <button id="btnBackToDashboardJoin" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7">Back</button>
+                    <button id="btnBackToDashboardJoin" class="btn btn-primary col-12 mb-4" type="button" style="background-color: #5651a7; width: 100px; border-color: #5651a7" aria-label="back to dashboard button">Back</button>
                     <h2 class="text-center" style="color: #5651a7;">Join Class</h2>
                     <input id="txtClassCode" class="form-control mt-3" type="text" placeholder="Class Code" aria-label="Input for class code">
                     <p style="color: #ff0033;" class='mt-1 mb-3'id="txtClassCodeError"></p>
                     <hr class="mt-4">
-                    <button id="btnJoinClassSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Join Class</button>
-                    <button id="btnSwapCreateClass" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;">Create a new class?</button>
+                    <button id="btnJoinClassSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="join class submit button">Join Class</button>
+                    <button id="btnSwapCreateClass" class="btn btn-link mt-2 col-12" type="button" style="color: #5651a7;" aria-label="Create new class submit button">Create a new class?</button>
                 </div>
             </div>
         </form>
@@ -182,13 +182,13 @@
                     <h2 id="studentClassTitle" class="text-center" style="color: #5651a7;"></h2>
                     <div id="divStudentReviews" class="gap-2">
                         <!-- Reviews will be dynamically added here -->
-                        <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Group Members</button>
-                        <button id="btnViewStudentReview" class="btn col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Your Reviews</button>
-                        <button id="btnWriteReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Write a Review</button>
+                        <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="view group member button">View Group Members</button>
+                        <button id="btnViewStudentReview" class="btn col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="view your reviews button">View Your Reviews</button>
+                        <button id="btnWriteReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="write your reviews button">Write a Review</button>
                         <!-- <h3 class="text-center" style="color: #5651a7;">No reviews added yet!</h3> -->
                     </div>
                     <hr class="mt-4">
-                    <button id="btnReturnDashboard" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Return to Dashboard</button>
+                    <button id="btnReturnDashboard" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="return to dashboard button">Return to Dashboard</button>
                 </div>
             </div>
         </form>
@@ -210,8 +210,8 @@
             <div class="card col-12">
                 <div class="card-body">
                     <h2 class="text-center" style="color: #5651a7;">Reviews</h2>
-                    <button id="btnShowMyReviews" type="button" class="btn btn-outline-primary">Your Reviews</button>
-                    <button id="btnShowPublicReviews" type="button" class="btn btn-outline-secondary">Public Reviews</button>
+                    <button id="btnShowMyReviews" type="button" class="btn btn-outline-primary" aria-label="view your reviews button">Your Reviews</button>
+                    <button id="btnShowPublicReviews" type="button" class="btn btn-outline-secondary" aria-label="view public reviews button">Public Reviews</button>
                     <div id="divDisplayStudentReviews" class="gap-2">
                         <!-- Reviews will be dynamically added here -->
                         <p>placeholder: review information goes here</p>
@@ -245,7 +245,7 @@
                     </select>
                     <div id="divReviewQuestions"></div>
                     <hr class="mt-4">
-                    <button id="btnWriteReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
+                    <button id="btnWriteReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="submit review button">Send out Review</button>
                 </div>
             </div>
         </form>
@@ -259,14 +259,14 @@
                     <h2 id="instructorClassTitle" class="text-center" style="color: #5651a7;"></h2>
                     <div id="divInstructorReviews" class="gap-2">
                         <!-- Reviews will be dynamically added here -->
-                        <button id="btnCreateGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Create Groups</button>
-                        <button id="btnViewGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Groups</button>
-                        <button id="btnViewInstructorReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">View Student's Reviews</button>
-                        <button id="btnCreateReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;">Create Review Prompt</button>
+                        <button id="btnCreateGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="Create groups button">Create Groups</button>
+                        <button id="btnViewGroupInstructor" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="view groups button">View Groups</button>
+                        <button id="btnViewInstructorReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="view student member reviews button">View Student's Reviews</button>
+                        <button id="btnCreateReview" class="btn  col-12 mt-3" type="button" style="color:#5651a7; font-weight:bold;" aria-label="create a prompt button">Create Review Prompt</button>
                         <!-- <h3 class="text-center" style="color: #5651a7;">No reviews added yet!</h3> -->
                     </div>
                     <hr class="mt-4">
-                    <button id="btnReturnInstructorDashboard" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Return to Dashboard</button>
+                    <button id="btnReturnInstructorDashboard" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="return to dashboard button">Return to Dashboard</button>
                 </div>
             </div>
         </form>
@@ -277,8 +277,8 @@
                     <h2 class="text-center" style="color: #5651a7;">Create Group</h2>
         
                     <div class="mb-3">
-                        <label for="txtGroupName" class="form-label" style="color:#5651a7;">Group Name</label>
-                        <input type="text" id="txtGroupName" class="form-control" placeholder="Enter group name">
+                        <label for="txtGroupName" class="form-label" style="color:#5651a7;" aria-label="Input Group name">Group Name</label>
+                        <input type="text" id="txtGroupName" class="form-control" placeholder="Enter group name" >
                         <div id="txtGroupNameError" class="form-text text-danger"></div>
                     </div>
         
@@ -293,7 +293,7 @@
                     </div>
                     
         
-                    <button id="btnSubmitCreateGroup" type="button" class="btn btn-primary col-12" style="background-color: #5651a7; border-color: #5651a7;">Create Group</button>
+                    <button id="btnSubmitCreateGroup" type="button" class="btn btn-primary col-12" style="background-color: #5651a7; border-color: #5651a7;" aria-label="create group button">Create Group</button>
                 </div>
             </div>
         </form>
@@ -303,7 +303,7 @@
         <form id="frmViewGroupInstructor" style="display: none;">
             <div class="card col-12">
                 <div class="card-body">
-                    <h2 class="text-center" style="color: #5651a7;">Groups</h2>
+                    <h2 class="text-center" style="color: #5651a7;" >Groups</h2>
                     <div id="divGroupMembersInstructor" class="gap-2">
                         <button id="btnViewGroup" class="btn  col-12 mt-3" type="button" style="color:#5651a7; border-color:gray; font-weight:bold;">dummyGroup</button>
                         <!-- Group members will be dynamically added here -->
@@ -343,9 +343,9 @@
                     <input id="txtReviewTitle" class="form-control mt-3" type="text" placeholder="Review Title" aria-label="Input for review title">
                     <p style="color: #ff0033;" class='mt-1 mb-3'id="txtReviewPromptError"></p>
                     <p>Start Date:</p>
-                    <input id="dtReviewStart" class="form-control mt-3" type="date" placeholder="Start Date">
+                    <input id="dtReviewStart" class="form-control mt-3" type="date" placeholder="Start Date" aria-label="Input Start Date">
                     <p>End Date:</p>
-                    <input id="dtReviewDue" class="form-control mt-3" type="date" placeholder="Due Date">
+                    <input id="dtReviewDue" class="form-control mt-3" type="date" placeholder="Due Date" aria-label="Input End Date">
                     <select id="selReviewType" class="form-select mt-3" aria-label="Select review type">
                         <option selected>Select Review Type</option>
                         <option value="Peer">Peer to Peer</option>
@@ -360,18 +360,18 @@
                         <option value="Short Answer">Short Answer</option>
                     </select>
 
-                    <input id="txtQuestionText" class="form-control mt-2" type="text" placeholder="Question Text">
+                    <input id="txtQuestionText" class="form-control mt-2" type="text" placeholder="Question Text" aria-label="Input text question ">
 
                     <!-- Options only show if Multiple Choice is selected -->
-                    <input id="txtQuestionOptions" class="form-control mt-2" type="text" placeholder="Comma-separated options (for Multiple Choice only)">
+                    <input id="txtQuestionOptions" class="form-control mt-2" type="text" placeholder="Comma-separated options (for Multiple Choice only)" aria-label="Input Comma-separated options (for Multiple Choice only)">
 
-                    <button id="btnAddQuestion" class="btn btn-outline-primary col-12 mt-2" type="button">Add Question</button>
+                    <button id="btnAddQuestion" class="btn btn-outline-primary col-12 mt-2" type="button" aria-label="add Question button">Add Question</button>
 
                     <!-- Questions preview -->
                     <ul id="ulReviewQuestions" class="list-group mt-3 mb-4"></ul>
 
                     <hr class="mt-4">
-                    <button id="btnCreateReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Send out Review</button>
+                    <button id="btnCreateReviewSubmit" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="send out review button">Send out Review</button>
                 </div>
             </div>
         </form>
@@ -398,12 +398,12 @@
                 <div id="socialEditContainer">
                   <!-- Dynamic input fields will appear here -->
                 </div>
-                <button id="btnSaveSocials" class="btn btn-success mt-2">Save Changes</button>
+                <button id="btnSaveSocials" class="btn btn-success mt-2" aria-label="save Changes to social button">Save Changes</button>
               </div>
           
               <!-- Edit Button -->
-              <button id="btnEditSocials" class="btn btn-outline-primary mt-3">Edit Socials</button>
-              <button id="btnCloseProfile" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;">Close</button>
+              <button id="btnEditSocials" class="btn btn-outline-primary mt-3" aria-label="edit socials button">Edit Socials</button>
+              <button id="btnCloseProfile" class="btn btn-primary col-12 mt-2" type="button" style="background-color: #5651a7; border-color: #5651a7;" aria-label="close profile view button">Close</button>
             </div>
     </div>
 

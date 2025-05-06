@@ -146,10 +146,31 @@ async function loadMyReviews() {
             <div class="card-body">
                 <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
                 <p><strong>About:</strong> ${target?.FirstName} ${target?.LastName}</p>
-                <p><strong>Response:</strong> ${resp.Response}</p>
+                <p><strong>Response:</strong> <span id="responseText-${resp.ResponseID}">${resp.Response}</span></p>
+                <button class="btn btn-warning btn-sm btnEditResponse" data-response-id="${resp.ResponseID}" data-response-text="${resp.Response}" data-is-public="${resp.IsPublic}">Edit</button>
+                <button class="btn btn-danger btn-sm btnDeleteResponse" data-response-id="${resp.ResponseID}">Delete</button>
             </div>
         `;
         div.appendChild(card);
+    });
+
+    // Add event listeners for edit buttons
+    document.querySelectorAll(".btnEditResponse").forEach(button => {
+        button.addEventListener("click", async (e) => {
+            const responseId = e.target.dataset.responseId;
+            const responseText = e.target.dataset.responseText;
+            const isPublic = e.target.dataset.isPublic === "true";
+            await editResponse(responseId, responseText, isPublic);
+        });
+    });
+
+    // Add event listeners for delete buttons
+    document.querySelectorAll(".btnDeleteResponse").forEach(button => {
+        button.addEventListener("click", async (e) => {
+            const responseId = e.target.dataset.responseId;
+            await deleteResponse(responseId);
+            loadMyReviews(); // Reload the reviews after deletion
+        });
     });
 }
 
@@ -677,6 +698,111 @@ function displaySocialsModal(user, socials) {
     });
 }
 
+function editQuestion(li, questionObj) {
+    // Populate the form with the question's current details
+    document.querySelector("#txtQuestionText").value = questionObj.questionNarrative;
+    document.querySelector("#selQuestionType").value = questionObj.questionType;
+    document.querySelector("#txtQuestionOptions").value = questionObj.options.join(", ");
+
+    // Remove the question from the array and the list
+    const index = arrReviewQuestions.indexOf(questionObj);
+    if (index > -1) arrReviewQuestions.splice(index, 1);
+    li.remove();
+}
+
+function deleteQuestion(li, questionObj) {
+    // Confirm deletion
+    Swal.fire({
+        title: "Are you sure?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Remove the question from the array and the list
+            const index = arrReviewQuestions.indexOf(questionObj);
+            if (index > -1) arrReviewQuestions.splice(index, 1);
+            li.remove();
+        }
+    });
+}
+
+async function loadMyReviews() {
+    const userId = localStorage.getItem("userId");
+    const strCourseId = localStorage.getItem("selectedCourseId");
+    const div = document.querySelector("#divDisplayStudentReviews");
+    div.innerHTML = '';
+
+    const [assessments, responses, questions, users] = await Promise.all([
+        getAllAssessments(),
+        getAllAssessmentResponses(),
+        getAssessmentQuestionsAll(),
+        getAllUsers()
+    ]);
+
+    const courseAssessments = assessments.filter(a => a.CourseID === strCourseId);
+    const userResponses = responses.filter(r => r.ReviewerUserID === userId && courseAssessments.some(a => a.AssessmentID === r.AssessmentID));
+
+    if (userResponses.length === 0) {
+        div.innerHTML = "<p class='text-center'>You haven't submitted any reviews.</p>";
+        return;
+    }
+
+    userResponses.forEach(resp => {
+        const question = questions.find(q => q.QuestionID === resp.QuestionID);
+        const target = users.find(u => u.UserID === resp.TargetUserID);
+        const card = document.createElement("div");
+        card.className = "card mb-3";
+        card.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title" style="color: #5651a7;">Question: ${question?.QuestionNarrative || "N/A"}</h5>
+                <p><strong>About:</strong> ${target?.FirstName} ${target?.LastName}</p>
+                <p><strong>Response:</strong> ${resp.Response}</p>
+                <button class="btn btn-danger btn-sm btnDeleteResponse" data-response-id="${resp.ResponseID}">Delete</button>
+            </div>
+        `;
+        div.appendChild(card);
+    });
+
+    // Add event listeners for delete buttons
+    document.querySelectorAll(".btnDeleteResponse").forEach(button => {
+        button.addEventListener("click", async (e) => {
+            const responseId = e.target.dataset.responseId;
+            await deleteResponse(responseId);
+            loadMyReviews(); // Reload the reviews after deletion
+        });
+    });
+}
+
+async function deleteResponse(responseId) {
+    try {
+        const res = await fetch(`http://localhost:8000/assessment-response/${responseId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || "Failed to delete response.");
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Response deleted successfully!",
+            timer: 1500,
+            showConfirmButton: false
+        });
+    } catch (err) {
+        console.error("Error deleting response:", err.message);
+        Swal.fire({
+            icon: "error",
+            title: "Failed to delete response",
+            text: err.message
+        });
+    }
+}
+
 document.querySelector('#btnViewGroup').addEventListener("click", (e) => {
     document.querySelector('#frmStudentClassView').style.display = 'none';
     document.querySelector('#frmViewGroup').style.display = 'block';
@@ -782,12 +908,24 @@ document.querySelector("#btnAddQuestion").addEventListener("click", () => {
         helperText: ""
     };
 
-    // Save and display
+    // Save the question
     arrReviewQuestions.push(questionObj);
 
+    // Create list item with edit and delete buttons
     const li = document.createElement("li");
-    li.className = "list-group-item";
-    li.innerText = `${strQuestionType}: ${strQuestionText}` + (questionObj.options.length ? ` [${questionObj.options.join(", ")}]` : "");
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.innerHTML = `
+        <span>${strQuestionType}: ${strQuestionText}${questionObj.options.length ? ` [${questionObj.options.join(", ")}]` : ""}</span>
+        <div>
+            <button class="btn btn-sm btn-warning btnEditQuestion">Edit</button>
+            <button class="btn btn-sm btn-danger btnDeleteQuestion">Delete</button>
+        </div>
+    `;
+
+    // Add event listeners for edit and delete buttons
+    li.querySelector(".btnEditQuestion").addEventListener("click", () => editQuestion(li, questionObj));
+    li.querySelector(".btnDeleteQuestion").addEventListener("click", () => deleteQuestion(li, questionObj));
+
     ul.appendChild(li);
 
     // Clear inputs
